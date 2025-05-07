@@ -2,9 +2,10 @@
 const { defineConfig } = require('eslint/config');
 const expoConfig = require('eslint-config-expo/flat');
 
-module.exports = defineConfig([
-  expoConfig,
-  {
-    ignores: ['dist/*'],
-  },
-]);
+module.exports = {
+  extends: ['expo'],
+  rules: {
+    'react/react-in-jsx-scope': 'off',
+    'react/prop-types': 'off'
+  }
+};
