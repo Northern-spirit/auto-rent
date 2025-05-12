@@ -2,7 +2,7 @@ import React from 'react';
 import { View, TextInput, Text, StyleSheet, ViewStyle, TextStyle } from 'react-native';
 
 interface InputProps {
-  label: string;
+  label?: string;
   value: string;
   onChangeText: (text: string) => void;
   placeholder?: string;
@@ -39,8 +39,8 @@ export const Input: React.FC<InputProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
-    marginBottom: 16,
+    width: 263,
+    marginBottom: 24,
   },
   label: {
     fontSize: 16,
@@ -49,11 +49,9 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 50,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
+    borderRadius: 20,
     paddingHorizontal: 16,
     fontSize: 16,
-    backgroundColor: '#fff',
+    backgroundColor: '#F2F2F2',
   },
 }); 

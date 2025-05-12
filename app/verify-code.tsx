@@ -51,7 +51,7 @@ export default function VerifyCode() {
         <Text style={styles.timerText}>
           Повторно можно запросить через {formatTime(timeLeft)}
         </Text>
-        <Button title="Подтвердить" onPress={handleVerify} />
+        <Button style={{ width: 180 }} title="Подтвердить" onPress={handleVerify} />
       </View>
     </View>
   );
@@ -61,7 +61,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    padding: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
   },
   title: {
     fontSize: 24,
@@ -72,12 +74,14 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 16,
-    textAlign: 'center',
     color: '#666',
     marginBottom: 32,
   },
   form: {
-    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
+    // width: '100%',
   },
   timerText: {
     fontSize: 14,

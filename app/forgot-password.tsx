@@ -18,12 +18,11 @@ export default function ForgotPassword() {
       <Text style={styles.title}>Восстановление пароля</Text>
       <View style={styles.form}>
         <Input
-          label="Email"
           value={email}
           onChangeText={setEmail}
           placeholder="Введите ваш email"
         />
-        <Button title="Сбросить пароль" onPress={handleResetPassword} />
+        <Button style={{ width: 180 }} title="Сбросить пароль" onPress={handleResetPassword} />
       </View>
     </View>
   );
@@ -33,10 +32,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 16,
   },
   title: {
-    fontSize: 24,
+    fontSize: 36,
     fontWeight: 'bold',
     textAlign: 'center',
     marginTop: 32,
@@ -44,5 +45,7 @@ const styles = StyleSheet.create({
   },
   form: {
     width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
 }); 

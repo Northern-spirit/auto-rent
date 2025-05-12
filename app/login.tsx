@@ -18,32 +18,43 @@ export default function Login() {
 
   return (
     <View style={styles.container}>
-      {/* <Image
-        source={require('../../assets/login-image.jpg')}
-        style={styles.image}
+      <Image
+        source={require('../assets/tyres.png')}
+        style={styles.tyres}
         resizeMode="cover"
-      /> */}
-      <Text style={styles.title}>Вход</Text>
-      <View style={styles.form}>
-        <Input
-          label="Email"
-          value={email}
-          onChangeText={setEmail}
-          placeholder="Введите ваш email"
-        />
-        <Input
-          label="Пароль"
-          value={password}
-          onChangeText={setPassword}
-          placeholder="Введите пароль"
-          secureTextEntry
-        />
-        <TouchableOpacity
-          onPress={() => router.push('/forgot-password')}
-          style={styles.forgotPassword}
-        >
-          <Text style={styles.forgotPasswordText}>Забыли пароль?</Text>
-        </TouchableOpacity>
+      />
+      <Image
+        source={require('../assets/iconCar.png')}
+        style={styles.iconCar}
+        resizeMode="cover"
+      />
+
+      <View>
+        <Text style={styles.title}>Вход</Text>
+        <View style={styles.form}>
+          <Input
+            label="Email"
+            value={email}
+            onChangeText={setEmail}
+            placeholder="Введите ваш email"
+          />
+          <Input
+            label="Пароль"
+            value={password}
+            onChangeText={setPassword}
+            placeholder="Введите пароль"
+            secureTextEntry
+          />
+          <TouchableOpacity
+            onPress={() => router.push('/forgot-password')}
+            style={styles.forgotPassword}
+          >
+            <Text style={styles.forgotPasswordText}>Забыли пароль?</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+      
+      <View style={styles.bottomContainer}>
         <Button title="Войти" onPress={handleLogin} />
         <View style={styles.registerContainer}>
           <Text style={styles.registerText}>Нет аккаунта?</Text>
@@ -59,11 +70,27 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    position: 'relative',
     backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   image: {
     width: width,
     height: width / 3,
+  },
+  tyres: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    zIndex: 0,
+    width: '100%',
+  },
+  iconCar: {
+    position: 'absolute',
+    top: 0,
+    zIndex: 1,
+    marginTop: '15%'
   },
   title: {
     fontSize: 24,
@@ -99,4 +126,8 @@ const styles = StyleSheet.create({
     color: '#007AFF',
     fontWeight: '600',
   },
+  bottomContainer: {
+    position: 'absolute',
+    bottom: 38
+  }
 }); 

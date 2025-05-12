@@ -20,39 +20,46 @@ export default function Register() {
 
   return (
     <View style={styles.container}>
-      {/* <Image
-        source={require('../../assets/register-image.jpg')}
-        style={styles.image}
+      <Image
+        source={require('../assets/tyres.png')}
+        style={styles.tyres}
         resizeMode="cover"
-      /> */}
-      <Text style={styles.title}>Регистрация</Text>
-      <View style={styles.form}>
-        <Input
-          label="Имя"
-          value={name}
-          onChangeText={setName}
-          placeholder="Введите ваше имя"
-        />
-        <Input
-          label="Email"
-          value={email}
-          onChangeText={setEmail}
-          placeholder="Введите ваш email"
-        />
-        <Input
-          label="Пароль"
-          value={password}
-          onChangeText={setPassword}
-          placeholder="Введите пароль"
-          secureTextEntry
-        />
-        <Input
-          label="Повторите пароль"
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          placeholder="Повторите пароль"
-          secureTextEntry
-        />
+      />
+      <Image
+        source={require('../assets/iconCar.png')}
+        style={styles.iconCar}
+        resizeMode="cover"
+      />
+
+      <View>
+        <Text style={styles.title}>Регистрация</Text>
+        <View style={styles.form}>
+          <Input
+            value={name}
+            onChangeText={setName}
+            placeholder="Введите ваше имя"
+          />
+          <Input
+            value={email}
+            onChangeText={setEmail}
+            placeholder="Введите ваш email"
+          />
+          <Input
+            value={password}
+            onChangeText={setPassword}
+            placeholder="Введите пароль"
+            secureTextEntry
+          />
+          <Input
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            placeholder="Повторите пароль"
+            secureTextEntry
+          />
+        </View>
+      </View>
+
+      <View style={styles.bottomContainer}>
         <Button title="Зарегистрироваться" onPress={handleRegister} />
         <View style={styles.loginContainer}>
           <Text style={styles.loginText}>У вас уже есть аккаунт?</Text>
@@ -68,11 +75,27 @@ export default function Register() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    position: 'relative',
     backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   image: {
     width: width,
     height: width / 3,
+  },
+  tyres: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    zIndex: 0,
+    width: '100%',
+  },
+  iconCar: {
+    position: 'absolute',
+    top: 0,
+    zIndex: 1,
+    marginTop: '15%'
   },
   title: {
     fontSize: 24,
@@ -100,4 +123,8 @@ const styles = StyleSheet.create({
     color: '#007AFF',
     fontWeight: '600',
   },
+  bottomContainer: {
+    position: 'absolute',
+    bottom: 38
+  }
 }); 

@@ -41,14 +41,14 @@ export const Button: React.FC<ButtonProps> = ({
 const styles = StyleSheet.create({
   button: {
     width: '100%',
-    height: 50,
-    borderRadius: 8,
+    height: 42,
+    borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical: 8,
   },
   primaryButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#9980FF',
   },
   secondaryButton: {
     backgroundColor: 'transparent',
