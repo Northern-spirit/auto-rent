@@ -33,13 +33,11 @@ export default function Login() {
         <Text style={styles.title}>Вход</Text>
         <View style={styles.form}>
           <Input
-            label="Email"
             value={email}
             onChangeText={setEmail}
             placeholder="Введите ваш email"
           />
           <Input
-            label="Пароль"
             value={password}
             onChangeText={setPassword}
             placeholder="Введите пароль"
