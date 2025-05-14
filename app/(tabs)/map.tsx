@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import { View, Text, StyleSheet } from 'react-native';
+// import MapView, { Marker } from 'react-native-maps'; // Закомментируем импорт карты
 
 const INITIAL_REGION = {
   latitude: 56.8389,
@@ -17,6 +17,8 @@ const MARKER_COORDINATES = {
 export default function MapScreen() {
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>Страница карт</Text>
+      {/* Закомментируем компонент карты
       <MapView
         style={styles.map}
         initialRegion={INITIAL_REGION}
@@ -27,6 +29,7 @@ export default function MapScreen() {
           description="г. Екатеринбург"
         />
       </MapView>
+      */}
     </View>
   );
 }
@@ -34,9 +37,16 @@ export default function MapScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
   },
-  map: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
   },
+  // map: {
+  //   width: Dimensions.get('window').width,
+  //   height: Dimensions.get('window').height,
+  // },
 }); 

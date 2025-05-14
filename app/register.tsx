@@ -15,7 +15,7 @@ export default function Register() {
 
   const handleRegister = () => {
     // Здесь будет логика регистрации
-    router.push('/home');
+    router.replace('/(tabs)/map');
   };
 
   return (

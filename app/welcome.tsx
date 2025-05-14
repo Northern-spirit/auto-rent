@@ -18,6 +18,7 @@ export default function Welcome() {
         style={styles.iconCar}
         resizeMode="cover"
       />
+      
       <Text style={styles.title}>Необходимо войти в аккаунт</Text>
       <View style={styles.buttonContainer}>
         <Button
@@ -38,10 +39,11 @@ export default function Welcome() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    position: 'relative',
     backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    paddingHorizontal: 20,
   },
   title: {
     fontSize: 24,

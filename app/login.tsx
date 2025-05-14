@@ -13,7 +13,7 @@ export default function Login() {
 
   const handleLogin = () => {
     // Здесь будет логика входа
-    router.push('/home');
+    router.replace('/(tabs)/map');
   };
 
   return (

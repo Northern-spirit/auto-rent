@@ -37,8 +37,8 @@ export default function AddListingScreen() {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Добавление объявления</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Добавить объявление</Text>
       
       <View style={styles.uploadContainer}>
         {images.length > 0 ? (
@@ -88,21 +88,20 @@ export default function AddListingScreen() {
           style={styles.nextButton}
         />
       )}
-    </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#fff',
-    padding: 16,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 24,
-    textAlign: 'center',
   },
   uploadContainer: {
     alignItems: 'center',
