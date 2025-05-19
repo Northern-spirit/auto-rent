@@ -1,19 +1,26 @@
 import React from 'react';
 import { View, FlatList, StyleSheet, Image, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 
-// Моковые данные для сообщений
 const MOCK_MESSAGES = [
   {
     id: '1',
+    carId: '1',
     title: 'BMW X5',
     price: '5000 ₽/сутки',
     lastMessage: 'Здравствуйте, автомобиль еще доступен?',
     unreadCount: 2,
     image: 'https://example.com/car1.jpg',
   },
-  // Добавьте больше моковых данных
+  {
+    id: '2',
+    carId: '2',
+    title: 'Mercedes-Benz C-Class',
+    price: '4500 ₽/сутки',
+    lastMessage: 'Добрый день, когда можно посмотреть?',
+    unreadCount: 1,
+    image: 'https://example.com/car2.jpg',
+  },
 ];
 
 export default function MessagesScreen() {
@@ -22,7 +29,7 @@ export default function MessagesScreen() {
   const renderItem = ({ item }) => (
     <TouchableOpacity 
       style={styles.messageCard}
-      onPress={() => router.push(`/chat/${item.id}`)}
+      onPress={() => router.push(`/chat/${item.carId}`)}
     >
       <Image
         source={{ uri: item.image }}

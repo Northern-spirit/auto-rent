@@ -1,28 +1,30 @@
 import React from 'react';
 import { View, FlatList, StyleSheet, Image, Text, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-
-const MOCK_FAVORITES = [
-  {
-    id: '1',
-    title: 'BMW X5',
-    price: '5000 ₽/сутки',
-    rating: 4.8,
-    distance: '2.5 км',
-    image: 'https://example.com/car1.jpg',
-  },
-  // Добавьте больше моковых данных
-];
+import { useStore } from '../../store/useStore';
 
 export default function FavoritesScreen() {
+  const router = useRouter();
+  const { favorites, removeFromFavorites } = useStore();
+
   const renderItem = ({ item }) => (
-    <View style={styles.card}>
+    <TouchableOpacity 
+      style={styles.card}
+      onPress={() => router.push(`/car/${item.id}`)}
+    >
       <View style={styles.imageContainer}>
         <Image
           source={{ uri: item.image }}
           style={styles.image}
         />
-        <TouchableOpacity style={styles.heartButton}>
+        <TouchableOpacity 
+          style={styles.heartButton}
+          onPress={(e) => {
+            e.stopPropagation();
+            removeFromFavorites(item.id);
+          }}
+        >
           <Ionicons name="heart" size={24} color="#FF3B30" />
         </TouchableOpacity>
       </View>
@@ -35,13 +37,13 @@ export default function FavoritesScreen() {
         </View>
         <Text style={styles.distance}>{item.distance}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
       <FlatList
-        data={MOCK_FAVORITES}
+        data={favorites}
         renderItem={renderItem}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.list}

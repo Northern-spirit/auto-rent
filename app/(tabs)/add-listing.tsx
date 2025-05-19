@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { Button } from '../../components/Button';
 import { Input } from '../../components/Input';
 
+const { width } = Dimensions.get('window');
+const THUMBNAIL_SIZE = 110;
+const PADDING = 16;
+const SPACING = 12;
+const ITEMS_PER_ROW = Math.floor((width - PADDING * 2) / (THUMBNAIL_SIZE + SPACING));
+
 export default function AddListingScreen() {
   const router = useRouter();
   const [images, setImages] = useState([]);
   const [videoUrl, setVideoUrl] = useState('');
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const pickImage = async () => {
     if (images.length >= 30) {
@@ -23,6 +28,7 @@ export default function AddListingScreen() {
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
+      backgroundColor: '#FFFFFF',
     });
 
     if (!result.canceled) {
@@ -30,46 +36,73 @@ export default function AddListingScreen() {
     }
   };
 
-  const nextStep = () => {
-    if (images.length > 0 || videoUrl) {
-      router.push('/add-listing/registration-data');
+  const removeImage = (index: number) => {
+    setImages(images.filter((_, i) => i !== index));
+  };
+
+  const renderThumbnails = () => {
+    const rows = [];
+    let currentRow = [];
+    
+    for (let i = 0; i < images.length; i++) {
+      currentRow.push(
+        <View key={i} style={styles.thumbnailContainer}>
+          <Image
+            source={{ uri: images[i] }}
+            style={styles.thumbnail}
+            resizeMode="cover"
+          />
+          <TouchableOpacity 
+            style={styles.removeButton}
+            onPress={() => removeImage(i)}
+          >
+            <Ionicons name="close-circle" size={24} color="#FF3B30" />
+          </TouchableOpacity>
+        </View>
+      );
+
+      if (currentRow.length === ITEMS_PER_ROW || i === images.length - 1) {
+        rows.push(
+          <View key={`row-${rows.length}`} style={styles.row}>
+            {currentRow}
+          </View>
+        );
+        currentRow = [];
+      }
     }
+
+    if (currentRow.length > 0) {
+      currentRow.push(
+        <TouchableOpacity key="upload" style={styles.uploadButton} onPress={pickImage}>
+          <Ionicons name="add" size={32} color="#007AFF" />
+          <Text style={styles.uploadText}>Добавить</Text>
+        </TouchableOpacity>
+      );
+      rows.push(
+        <View key={`row-${rows.length}`} style={styles.row}>
+          {currentRow}
+        </View>
+      );
+    } else {
+      rows.push(
+        <View key="upload-row" style={styles.row}>
+          <TouchableOpacity style={styles.uploadButton} onPress={pickImage}>
+            <Ionicons name="add" size={32} color="#007AFF" />
+            <Text style={styles.uploadText}>Добавить</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    return rows;
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Добавить объявление</Text>
       
-      <View style={styles.uploadContainer}>
-        {images.length > 0 ? (
-          <View style={styles.imageContainer}>
-            <Image
-              source={{ uri: images[currentImageIndex] }}
-              style={styles.image}
-            />
-            {images.length > 1 && (
-              <View style={styles.navigationButtons}>
-                <TouchableOpacity
-                  onPress={() => setCurrentImageIndex(prev => (prev > 0 ? prev - 1 : prev))}
-                  style={styles.navButton}
-                >
-                  <Ionicons name="chevron-back" size={24} color="#000" />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => setCurrentImageIndex(prev => (prev < images.length - 1 ? prev + 1 : prev))}
-                  style={styles.navButton}
-                >
-                  <Ionicons name="chevron-forward" size={24} color="#000" />
-                </TouchableOpacity>
-              </View>
-            )}
-          </View>
-        ) : (
-          <TouchableOpacity style={styles.uploadButton} onPress={pickImage}>
-            <Ionicons name="add" size={48} color="#007AFF" />
-            <Text style={styles.uploadText}>Загрузить фото</Text>
-          </TouchableOpacity>
-        )}
+      <View style={styles.imagesGrid}>
+        {renderThumbnails()}
       </View>
 
       <Text style={styles.uploadHint}>Не более 30 фотографий</Text>
@@ -84,7 +117,7 @@ export default function AddListingScreen() {
       {(images.length > 0 || videoUrl) && (
         <Button
           title="Далее"
-          onPress={nextStep}
+          onPress={() => router.push('/add-listing/registration-data')}
           style={styles.nextButton}
         />
       )}
@@ -95,68 +128,68 @@ export default function AddListingScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#fff',
+    padding: PADDING,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
+    marginBottom: 24,
   },
-  uploadContainer: {
-    alignItems: 'center',
+  imagesGrid: {
     marginBottom: 16,
   },
-  uploadButton: {
-    width: 200,
-    height: 200,
-    borderWidth: 2,
-    borderColor: '#007AFF',
-    borderStyle: 'dashed',
+  row: {
+    flexDirection: 'row',
+    marginBottom: SPACING,
+    justifyContent: 'center',
+  },
+  thumbnailContainer: {
+    width: THUMBNAIL_SIZE,
+    height: THUMBNAIL_SIZE,
+    marginRight: SPACING,
+    position: 'relative',
+  },
+  thumbnail: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 8,
+    backgroundColor: '#f0f0f0',
+  },
+  removeButton: {
+    position: 'absolute',
+    top: -8,
+    right: -8,
+    backgroundColor: '#fff',
     borderRadius: 12,
+  },
+  uploadButton: {
+    width: THUMBNAIL_SIZE,
+    height: THUMBNAIL_SIZE,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#007AFF',
+    borderStyle: 'dashed',
   },
   uploadText: {
-    marginTop: 8,
+    marginTop: 4,
+    fontSize: 12,
     color: '#007AFF',
-    fontSize: 16,
   },
   uploadHint: {
     textAlign: 'center',
+    fontSize: 14,
     color: '#666',
     marginBottom: 16,
   },
   videoInput: {
+    width: '100%',
     marginBottom: 24,
   },
   nextButton: {
-    marginTop: 16,
-  },
-  imageContainer: {
-    width: '100%',
-    height: 300,
-    position: 'relative',
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 12,
-  },
-  navigationButtons: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-  },
-  navButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    borderRadius: 20,
-    padding: 8,
+    marginTop: 'auto',
   },
 }); 
