@@ -1,30 +1,24 @@
 import React from 'react';
 import { View, FlatList, StyleSheet, Image, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-
-const MOCK_MESSAGES = [
-  {
-    id: '1',
-    carId: '1',
-    title: 'BMW X5',
-    price: '5000 ₽/сутки',
-    lastMessage: 'Здравствуйте, автомобиль еще доступен?',
-    unreadCount: 2,
-    image: 'https://example.com/car1.jpg',
-  },
-  {
-    id: '2',
-    carId: '2',
-    title: 'Mercedes-Benz C-Class',
-    price: '4500 ₽/сутки',
-    lastMessage: 'Добрый день, когда можно посмотреть?',
-    unreadCount: 1,
-    image: 'https://example.com/car2.jpg',
-  },
-];
+import { useStore } from '../../store/useStore';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function MessagesScreen() {
   const router = useRouter();
+  const { getMessages } = useStore();
+  const messages = getMessages();
+
+  if (!messages || messages.length === 0) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.emptyContainer}>
+          <Ionicons name="chatbubble-outline" size={64} color="#8E8E93" />
+          <Text style={styles.emptyText}>У вас пока нет сообщений</Text>
+        </View>
+      </View>
+    );
+  }
 
   const renderItem = ({ item }) => (
     <TouchableOpacity 
@@ -53,7 +47,7 @@ export default function MessagesScreen() {
   return (
     <View style={styles.container}>
       <FlatList
-        data={MOCK_MESSAGES}
+        data={messages}
         renderItem={renderItem}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.list}
@@ -65,19 +59,34 @@ export default function MessagesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: '#fff',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  emptyText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: '#8E8E93',
+    textAlign: 'center',
   },
   list: {
     padding: 16,
   },
   messageCard: {
     flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#fff',
     borderRadius: 12,
     marginBottom: 16,
     padding: 12,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
@@ -86,38 +95,41 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 8,
-    marginRight: 12,
   },
   messageContent: {
     flex: 1,
+    marginLeft: 12,
     justifyContent: 'center',
   },
   carTitle: {
     fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 4,
+    fontWeight: 'bold',
   },
   carPrice: {
     fontSize: 14,
     color: '#007AFF',
-    marginBottom: 4,
+    marginTop: 4,
   },
   lastMessage: {
     fontSize: 14,
     color: '#666',
+    marginTop: 4,
   },
   unreadBadge: {
-    backgroundColor: '#007AFF',
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    backgroundColor: '#FF3B30',
     borderRadius: 12,
     minWidth: 24,
     height: 24,
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 8,
+    paddingHorizontal: 8,
   },
   unreadCount: {
-    color: '#FFFFFF',
+    color: '#fff',
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: 'bold',
   },
 }); 

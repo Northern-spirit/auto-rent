@@ -130,6 +130,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     padding: PADDING,
+    overflow: 'scroll',
   },
   title: {
     fontSize: 24,

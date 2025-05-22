@@ -16,17 +16,18 @@ export default function PriceScreen() {
       return;
     }
 
+    router.push('/(tabs)/map')
     // Здесь будет логика публикации объявления
-    Alert.alert(
-      'Успех',
-      'Объявление успешно опубликовано',
-      [
-        {
-          text: 'OK',
-          onPress: () => router.push('/(tabs)/map'),
-        },
-      ]
-    );
+    // Alert.alert(
+    //   'Успех',
+    //   'Объявление успешно опубликовано',
+    //   [
+    //     {
+    //       text: 'OK',
+    //       onPress: () => router.push('/(tabs)/map'),
+    //     },
+    //   ]
+    // );
   };
 
   return (

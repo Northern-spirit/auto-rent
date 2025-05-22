@@ -2,34 +2,25 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-
-const MOCK_CARS = {
-  '1': {
-    id: '1',
-    title: 'BMW X5',
-    price: '5000 ₽/сутки',
-    rating: 4.8,
-    distance: '2.5 км',
-    image: 'https://example.com/car1.jpg',
-    description: 'Отличный автомобиль в идеальном состоянии',
-  },
-  '2': {
-    id: '2',
-    title: 'Mercedes-Benz C-Class',
-    price: '4500 ₽/сутки',
-    rating: 4.9,
-    distance: '3.1 км',
-    image: 'https://example.com/car2.jpg',
-    description: 'Комфортный седан для поездок по городу',
-  },
-};
+import { useStore } from '../../store/useStore';
 
 export default function CarDetailScreen() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
-  const car = MOCK_CARS[id];
+  const { getCarById, favorites, addToFavorites, removeFromFavorites } = useStore();
+  
+  const car = getCarById(id as string);
+  const isFavorite = favorites.some(fav => fav.id === id);
 
   if (!car) return null;
+
+  const toggleFavorite = () => {
+    if (isFavorite) {
+      removeFromFavorites(car.id);
+    } else {
+      addToFavorites(car);
+    }
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -38,6 +29,17 @@ export default function CarDetailScreen() {
         onPress={() => router.back()}
       >
         <Ionicons name="arrow-back" size={24} color="#000" />
+      </TouchableOpacity>
+
+      <TouchableOpacity 
+        style={styles.favoriteButton}
+        onPress={toggleFavorite}
+      >
+        <Ionicons 
+          name={isFavorite ? "heart" : "heart-outline"} 
+          size={24} 
+          color={isFavorite ? "#FF3B30" : "#000"} 
+        />
       </TouchableOpacity>
       
       <Image source={{ uri: car.image }} style={styles.image} />
@@ -66,6 +68,15 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 40,
     left: 16,
+    zIndex: 1,
+    padding: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    borderRadius: 20,
+  },
+  favoriteButton: {
+    position: 'absolute',
+    top: 40,
+    right: 16,
     zIndex: 1,
     padding: 8,
     backgroundColor: 'rgba(255, 255, 255, 0.8)',

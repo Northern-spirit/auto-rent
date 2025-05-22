@@ -17,8 +17,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="map"
         options={{
-          title: 'Карта',
-          tabBarIcon: ({ color }) => <Ionicons name="car" size={24} color={color} />,
+          title: 'Главная',
+          tabBarIcon: ({ color }) => <Ionicons name="home" size={24} color={color} />,
         }}
       />
       <Tabs.Screen

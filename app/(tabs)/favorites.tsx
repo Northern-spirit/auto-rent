@@ -8,6 +8,17 @@ export default function FavoritesScreen() {
   const router = useRouter();
   const { favorites, removeFromFavorites } = useStore();
 
+  if (!favorites || favorites.length === 0) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.emptyContainer}>
+          <Ionicons name="heart-outline" size={64} color="#8E8E93" />
+          <Text style={styles.emptyText}>В избранном пока ничего нет</Text>
+        </View>
+      </View>
+    );
+  }
+
   const renderItem = ({ item }) => (
     <TouchableOpacity 
       style={styles.card}
@@ -55,54 +66,72 @@ export default function FavoritesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: '#fff',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  emptyText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: '#8E8E93',
+    textAlign: 'center',
   },
   list: {
     padding: 16,
   },
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#fff',
     borderRadius: 12,
     marginBottom: 16,
-    padding: 12,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
   },
   imageContainer: {
     position: 'relative',
-    marginBottom: 12,
   },
   image: {
     width: '100%',
     height: 200,
-    borderRadius: 8,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
   },
   heartButton: {
     position: 'absolute',
     top: 12,
     right: 12,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
     borderRadius: 20,
     padding: 8,
   },
   title: {
     fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 4,
+    fontWeight: 'bold',
+    marginTop: 12,
+    marginHorizontal: 16,
   },
   price: {
     fontSize: 16,
     color: '#007AFF',
-    fontWeight: '600',
-    marginBottom: 8,
+    marginTop: 4,
+    marginHorizontal: 16,
   },
   footer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginTop: 8,
+    marginBottom: 16,
+    marginHorizontal: 16,
   },
   rating: {
     flexDirection: 'row',

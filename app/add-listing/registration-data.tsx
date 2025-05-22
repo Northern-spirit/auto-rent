@@ -57,6 +57,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   input: {
+    width: '100%',
     marginBottom: 16,
   },
   buttonContainer: {
