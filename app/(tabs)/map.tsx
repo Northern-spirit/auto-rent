@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, Image } 
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useStore } from '../../store/useStore';
+import CarCard from '../../components/CarCard';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -31,48 +32,13 @@ export default function HomeScreen() {
     // );
   };
 
-  const renderCarItem = ({ item }) => {
-    const isFavorite = favorites.some(fav => fav.id === item.id);
-    
-    return (
-      <TouchableOpacity 
-        style={styles.carCard}
-        onPress={() => router.push(`/car/${item.id}`)}
-      >
-        <View style={styles.imageContainer}>
-          <Image
-            source={{ uri: item.image }}
-            style={styles.carImage}
-          />
-          <TouchableOpacity 
-            style={styles.favoriteButton}
-            onPress={(e) => {
-              e.stopPropagation();
-              if (isFavorite) {
-                removeFromFavorites(item.id);
-              } else {
-                addToFavorites(item);
-              }
-            }}
-          >
-            <Ionicons 
-              name={isFavorite ? "heart" : "heart-outline"} 
-              size={24} 
-              color={isFavorite ? "#FF3B30" : "#000"} 
-            />
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.carTitle}>{item.title}</Text>
-        <Text style={styles.carPrice}>{item.priceDisplay}</Text>
-        <View style={styles.carFooter}>
-          <View style={styles.rating}>
-            <Ionicons name="star" size={16} color="#FFD700" />
-            <Text style={styles.ratingText}>{item.rating}</Text>
-          </View>
-          <Text style={styles.distance}>{item.distance}</Text>
-        </View>
-      </TouchableOpacity>
-    );
+  const handleFavoritePress = (car) => {
+    const isFavorite = favorites.some(fav => fav.id === car.id);
+    if (isFavorite) {
+      removeFromFavorites(car.id);
+    } else {
+      addToFavorites(car);
+    }
   };
 
   return (
@@ -107,7 +73,12 @@ export default function HomeScreen() {
       {/* Блок 3: Список объявлений */}
       <FlatList
         data={filteredCars}
-        renderItem={renderCarItem}
+        renderItem={({ item }) => (
+          <CarCard 
+            car={item}
+            onFavoritePress={() => handleFavoritePress(item)}
+          />
+        )}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.list}
         numColumns={2}
@@ -166,55 +137,5 @@ const styles = StyleSheet.create({
   },
   row: {
     justifyContent: 'space-between',
-  },
-  carCard: {
-    width: '48%',
-    marginBottom: 16,
-  },
-  imageContainer: {
-    position: 'relative',
-    marginBottom: 8,
-  },
-  carImage: {
-    width: 160,
-    height: 116,
-    borderRadius: 15,
-  },
-  favoriteButton: {
-    position: 'absolute',
-    top: 8,
-    right: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    borderRadius: 20,
-    padding: 8,
-  },
-  carTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  carPrice: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#007AFF',
-    marginBottom: 4,
-  },
-  carFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  rating: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  ratingText: {
-    marginLeft: 4,
-    fontSize: 14,
-    color: '#666',
-  },
-  distance: {
-    fontSize: 14,
-    color: '#666',
   },
 }); 

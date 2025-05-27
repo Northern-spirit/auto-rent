@@ -78,12 +78,39 @@ export default function ProfileScreen() {
   };
 
   const menuItems = [
-    { icon: 'car', title: 'Управление объявлениями', onPress: () => {} },
-    { icon: 'stats-chart', title: 'Статистика', onPress: () => {} },
-    { icon: 'time', title: 'История', onPress: () => {} },
-    { icon: 'help-circle', title: 'Служба поддержки', onPress: () => {} },
-    { icon: 'information-circle', title: 'О приложении', onPress: () => {} },
-    { icon: 'log-out', title: 'Выйти', onPress: handleLogout, color: '#FF6969' },
+    { 
+      icon: 'car', 
+      title: 'Управление объявлениями', 
+      onPress: () => router.push('/my-listings') 
+    },
+    { 
+      icon: 'stats-chart', 
+      title: 'Статистика', 
+      onPress: () => {
+        Alert.alert('В разработке', 'Функция находится в разработке');
+      }
+    },
+    { 
+      icon: 'time', 
+      title: 'История', 
+      onPress: () => router.push('/history') 
+    },
+    { 
+      icon: 'help-circle', 
+      title: 'Служба поддержки', 
+      onPress: () => router.push('/support') 
+    },
+    { 
+      icon: 'information-circle', 
+      title: 'О приложении', 
+      onPress: () => router.push('/about') 
+    },
+    { 
+      icon: 'log-out', 
+      title: 'Выйти', 
+      onPress: handleLogout, 
+      color: '#FF6969' 
+    },
   ];
 
   return (
@@ -134,7 +161,10 @@ export default function ProfileScreen() {
           <Text style={styles.balanceLabel}>Баланс</Text>
           <Text style={styles.balanceAmount}>{user.balance.toLocaleString()} ₽</Text>
         </View>
-        <TouchableOpacity style={styles.replenishButton} onPress={handleReplenish}>
+        <TouchableOpacity 
+          style={styles.replenishButton} 
+          onPress={() => router.push('/balance')}
+        >
           <Text style={styles.replenishButtonText}>Пополнить</Text>
         </TouchableOpacity>
       </View>
