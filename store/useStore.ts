@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { router } from 'expo-router';
+import { BookingStatus } from '../types';
 
 interface Car {
   id: string;
@@ -18,9 +19,15 @@ interface Message {
   carId: string;
   title: string;
   price: string;
+  priceValue: number;
   lastMessage: string;
   unreadCount: number;
   image: string;
+  status: BookingStatus;
+  description: string;
+  buyerId: string;
+  sellerId: string;
+  createdAt: string;
 }
 
 interface User {
@@ -28,6 +35,7 @@ interface User {
   name: string;
   avatar: string;
   type: 'individual' | 'company';
+  role: 'buyer' | 'seller';
   city: string;
   rating: number;
   reviewsCount: number;
@@ -49,6 +57,12 @@ interface Store {
   logout: () => void;
   setSortType: (type: 'distance' | 'priceAsc' | 'priceDesc' | null) => void;
   getSortedCars: () => Car[];
+  updateMessageStatus: (messageId: string, newStatus: BookingStatus) => void;
+  createBooking: (carId: string) => void;
+  processBooking: (messageId: string) => void;
+  getMessagesByRole: () => Message[];
+  updateUserRole: (role: 'buyer' | 'seller') => void;
+  login: (email: string, password: string, role: 'buyer' | 'seller') => void;
 }
 
 export const useStore = create<Store>((set, get) => ({
@@ -194,18 +208,30 @@ export const useStore = create<Store>((set, get) => ({
       carId: '1',
       title: 'BMW X5',
       price: '5000 ₽/сутки',
+      priceValue: 5000,
       lastMessage: 'Здравствуйте, автомобиль еще доступен?',
       unreadCount: 2,
       image: 'https://cdn.apiweb.rolf.ru/storage/thumbnails/large/models/14-bmw/4921-x5_new/c65f831967794f342c1ab1d8464c7d58.png',
+      status: 'на рассмотрении',
+      description: 'Отличный автомобиль в идеальном состоянии',
+      buyerId: '2',
+      sellerId: '1',
+      createdAt: new Date().toISOString(),
     },
     {
       id: '2',
       carId: '2',
       title: 'Mercedes-Benz C-Class',
       price: '4500 ₽/сутки',
+      priceValue: 4500,
       lastMessage: 'Добрый день, когда можно посмотреть?',
       unreadCount: 1,
       image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Mercedes-Benz_W206_IMG_6380.jpg/1280px-Mercedes-Benz_W206_IMG_6380.jpg',
+      status: 'на рассмотрении',
+      description: 'Комфортный седан для поездок по городу',
+      buyerId: '2',
+      sellerId: '1',
+      createdAt: new Date().toISOString(),
     },
   ],
   user: {
@@ -213,6 +239,7 @@ export const useStore = create<Store>((set, get) => ({
     name: 'Иван Иванов',
     avatar: require('../assets/images/avatar.png'),
     type: 'individual',
+    role: 'buyer',
     city: 'Москва',
     rating: 4.8,
     reviewsCount: 12,
@@ -271,5 +298,91 @@ export const useStore = create<Store>((set, get) => ({
       default:
         return sortedCars;
     }
+  },
+  updateMessageStatus: (messageId, newStatus) => 
+    set((state) => ({
+      messages: state.messages.map(msg => 
+        msg.id === messageId 
+          ? { ...msg, status: newStatus }
+          : msg
+      )
+    })),
+  createBooking: (carId) => {
+    const { user, cars } = get();
+    const car = cars.find(c => c.id === carId);
+    
+    if (!car || user.role !== 'buyer') return;
+
+    const newMessage: Message = {
+      id: Date.now().toString(),
+      carId,
+      title: car.title,
+      price: car.priceDisplay,
+      priceValue: car.price,
+      lastMessage: 'Новая заявка на бронирование',
+      unreadCount: 1,
+      image: car.image,
+      status: 'на рассмотрении',
+      description: car.description,
+      buyerId: user.id,
+      sellerId: car.sellerId,
+      createdAt: new Date().toISOString(),
+    };
+
+    set((state) => ({
+      messages: [...state.messages, newMessage]
+    }));
+  },
+  processBooking: (messageId) => {
+    const { user, messages } = get();
+    const message = messages.find(m => m.id === messageId);
+    
+    if (!message) return;
+
+    const statusFlow: Record<BookingStatus, BookingStatus> = {
+      'на рассмотрении': 'ожидает оплаты',
+      'ожидает оплаты': 'одобрено',
+      'одобрено': 'выполняется',
+      'выполняется': 'ожидает отзыв',
+      'ожидает отзыв': 'завершен',
+      'завершен': 'завершен'
+    };
+
+    const newStatus = statusFlow[message.status];
+    if (newStatus) {
+      get().updateMessageStatus(messageId, newStatus);
+    }
+  },
+  getMessagesByRole: () => {
+    const { user, messages } = get();
+    return messages.filter(msg => 
+      user.role === 'buyer' 
+        ? msg.buyerId === user.id
+        : msg.sellerId === user.id
+    );
+  },
+  updateUserRole: (role: 'buyer' | 'seller') =>
+    set((state) => ({
+      user: {
+        ...state.user,
+        role,
+      },
+    })),
+  login: (email: string, password: string, role: 'buyer' | 'seller') => {
+    // Здесь в реальном приложении будет проверка email и password
+    // Сейчас просто создаем пользователя с выбранной ролью
+    set((state) => ({
+      user: {
+        id: '1',
+        name: 'Иван Иванов',
+        avatar: require('../assets/images/avatar.png'),
+        type: 'individual',
+        role: role,
+        city: 'Москва',
+        rating: 4.8,
+        reviewsCount: 12,
+        balance: 15000,
+      }
+    }));
   },
 })); 

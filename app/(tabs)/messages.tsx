@@ -3,11 +3,12 @@ import { View, FlatList, StyleSheet, Image, Text, TouchableOpacity } from 'react
 import { useRouter } from 'expo-router';
 import { useStore } from '../../store/useStore';
 import { Ionicons } from '@expo/vector-icons';
+import { getStatusColor, BookingStatus } from '../../types';
 
 export default function MessagesScreen() {
   const router = useRouter();
-  const { getMessages } = useStore();
-  const messages = getMessages();
+  const { getMessagesByRole, user } = useStore();
+  const messages = getMessagesByRole();
 
   if (!messages || messages.length === 0) {
     return (
@@ -23,7 +24,7 @@ export default function MessagesScreen() {
   const renderItem = ({ item }) => (
     <TouchableOpacity 
       style={styles.messageCard}
-      onPress={() => router.push(`/chat/${item.carId}`)}
+      onPress={() => router.push(`/chat/${item.id}`)}
     >
       <Image
         source={{ uri: item.image }}
@@ -32,9 +33,9 @@ export default function MessagesScreen() {
       <View style={styles.messageContent}>
         <Text style={styles.carTitle}>{item.title}</Text>
         <Text style={styles.carPrice}>{item.price}</Text>
-        <Text style={styles.lastMessage} numberOfLines={1}>
-          {item.lastMessage}
-        </Text>
+        <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status as BookingStatus) }]}>
+          <Text style={styles.statusText}>{item.status}</Text>
+        </View>
       </View>
       {item.unreadCount > 0 && (
         <View style={styles.unreadBadge}>
@@ -110,10 +111,14 @@ const styles = StyleSheet.create({
     color: '#007AFF',
     marginTop: 4,
   },
-  lastMessage: {
-    fontSize: 14,
-    color: '#666',
+  statusBadge: {
+    padding: 4,
+    borderRadius: 4,
     marginTop: 4,
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: 'bold',
   },
   unreadBadge: {
     position: 'absolute',

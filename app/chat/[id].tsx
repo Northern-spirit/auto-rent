@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, FlatList, TextInput, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, FlatList, TextInput, TouchableOpacity, Text, Image, ScrollView, Alert } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useStore } from '../../store/useStore';
+import { getStatusColor, BookingStatus } from '../../types';
 
 const MOCK_CHATS = {
   '1': [
@@ -31,30 +33,69 @@ const MOCK_CHATS = {
 export default function ChatScreen() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
-  const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState(MOCK_CHATS[id] || []);
+  const { messages, user, processBooking, updateBalance } = useStore();
+  
+  
+  const message = messages.find(m => m.id === id);
+  if (!message) return null;
 
-  const sendMessage = () => {
-    if (!message.trim()) return;
-
-    const newMessage = {
-      id: Date.now().toString(),
-      text: message,
-      senderId: 'currentUser',
-      timestamp: new Date(),
-    };
-
-    setMessages([...messages, newMessage]);
-    setMessage('');
+  const handleStatusPress = () => {
+    if (user.role === 'seller') {
+      processBooking(message.id);
+    } else if (message.status === 'ожидает оплаты') {
+      if (user.balance >= message.priceValue) {
+        updateBalance(-message.priceValue);
+        processBooking(message.id);
+      } else {
+        Alert.alert('Ошибка', 'Недостаточно средств');
+      }
+    } else {
+      processBooking(message.id);
+    }
   };
 
+  const sendMessage = () => {
+    alert(123)
+  };
+
+
+  
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+        <TouchableOpacity onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Чат</Text>
+        <Text style={styles.title}>Чат</Text>
+      </View>
+
+      <View style={styles.carCard}>
+        <Image source={{ uri: message.image }} style={styles.carImage} />
+        <Text style={styles.carTitle}>{message.title}</Text>
+        <Text style={styles.carDescription}>{message.description}</Text>
+        <Text style={styles.carPrice}>{message.price}</Text>
+        
+        <TouchableOpacity 
+          style={[styles.statusButton, { backgroundColor: getStatusColor(message.status as BookingStatus) }]}
+          onPress={handleStatusPress}
+        >
+          <Text style={styles.statusButtonText}>{message.status}</Text>
+        </TouchableOpacity>
+
+        {user.role === 'buyer' && message.status === 'ожидает оплаты' && (
+          <View style={styles.paymentBlock}>
+            <Text style={styles.balanceText}>
+              Ваш баланс: {user.balance.toLocaleString()} ₽
+            </Text>
+            <TouchableOpacity 
+              style={styles.payButton}
+              onPress={handleStatusPress}
+            >
+              <Text style={styles.payButtonText}>Оплатить</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
 
       <FlatList
@@ -86,7 +127,7 @@ export default function ChatScreen() {
           <Ionicons name="send" size={24} color="#007AFF" />
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -151,5 +192,64 @@ const styles = StyleSheet.create({
   },
   sendButton: {
     padding: 8,
+  },
+  carCard: {
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#eee',
+    borderRadius: 16,
+    marginBottom: 16,
+  },
+  carImage: {
+    width: '100%',
+    height: 200,
+    borderRadius: 16,
+    marginBottom: 16,
+  },
+  carTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  carDescription: {
+    marginBottom: 8,
+  },
+  carPrice: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  statusButton: {
+    padding: 12,
+    borderRadius: 16,
+    marginTop: 16,
+  },
+  statusButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  paymentBlock: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  balanceText: {
+    fontSize: 16,
+    marginRight: 16,
+  },
+  payButton: {
+    padding: 12,
+    borderRadius: 16,
+    backgroundColor: '#007AFF',
+  },
+  payButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginLeft: 16,
   },
 }); 

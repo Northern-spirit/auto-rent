@@ -7,7 +7,7 @@ import { useStore } from '../../store/useStore';
 export default function CarDetailScreen() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
-  const { getCarById, favorites, addToFavorites, removeFromFavorites } = useStore();
+  const { getCarById, favorites, addToFavorites, removeFromFavorites, user, createBooking } = useStore();
   
   const car = getCarById(id as string);
   const isFavorite = favorites.some(fav => fav.id === id);
@@ -19,6 +19,13 @@ export default function CarDetailScreen() {
       removeFromFavorites(car.id);
     } else {
       addToFavorites(car);
+    }
+  };
+
+  const handleBookPress = () => {
+    if (user.role === 'buyer') {
+      createBooking(car.id);
+      router.push('/messages');
     }
   };
 
@@ -55,6 +62,15 @@ export default function CarDetailScreen() {
         </View>
         <Text style={styles.description}>{car.description}</Text>
       </View>
+
+      {user.role === 'buyer' && (
+        <TouchableOpacity 
+          style={styles.bookButton}
+          onPress={handleBookPress}
+        >
+          <Text style={styles.bookButtonText}>Забронировать</Text>
+        </TouchableOpacity>
+      )}
     </ScrollView>
   );
 }
@@ -120,5 +136,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
     color: '#333',
+  },
+  bookButton: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 16,
+    backgroundColor: '#007AFF',
+    borderRadius: 0,
+    borderTopWidth: 1,
+    borderTopColor: '#ddd',
+  },
+  bookButtonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
+    textAlign: 'center',
   },
 }); 
