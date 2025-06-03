@@ -42,6 +42,14 @@ interface User {
   balance: number;
 }
 
+interface ChatMessage {
+  id: string;
+  text: string;
+  senderId: string;
+  timestamp: string;
+  messageId: string;
+}
+
 interface Store {
   cars: Car[];
   favorites: Car[];
@@ -63,6 +71,8 @@ interface Store {
   getMessagesByRole: () => Message[];
   updateUserRole: (role: 'buyer' | 'seller') => void;
   login: (email: string, password: string, role: 'buyer' | 'seller') => void;
+  chatMessages: Record<string, ChatMessage[]>;
+  sendMessage: (messageId: string, text: string) => void;
 }
 
 export const useStore = create<Store>((set, get) => ({
@@ -236,14 +246,14 @@ export const useStore = create<Store>((set, get) => ({
   ],
   user: {
     id: '1',
-    name: 'Иван Иванов',
+    name: 'Александр Грехов',
     avatar: require('../assets/images/avatar.png'),
     type: 'individual',
     role: 'buyer',
     city: 'Москва',
     rating: 4.8,
     reviewsCount: 12,
-    balance: 15000,
+    balance: 35000,
   },
   sortType: null,
   addToFavorites: (car) => 
@@ -297,7 +307,7 @@ export const useStore = create<Store>((set, get) => ({
         return sortedCars.sort((a, b) => b.price - a.price);
       default:
         return sortedCars;
-    }
+    }йцу
   },
   updateMessageStatus: (messageId, newStatus) => 
     set((state) => ({
@@ -383,6 +393,62 @@ export const useStore = create<Store>((set, get) => ({
         reviewsCount: 12,
         balance: 15000,
       }
+    }));
+  },
+  chatMessages: {
+    '1': [
+      {
+        id: '1',
+        text: 'Здравствуйте, автомобиль еще доступен?',
+        senderId: '2',
+        timestamp: new Date(Date.now() - 3600000).toISOString(),
+        messageId: '1'
+      },
+      {
+        id: '2',
+        text: 'Да, автомобиль доступен',
+        senderId: '1',
+        timestamp: new Date(Date.now() - 1800000).toISOString(),
+        messageId: '1'
+      }
+    ],
+    '2': [
+      {
+        id: '3',
+        text: 'Добрый день, когда можно посмотреть?',
+        senderId: '2',
+        timestamp: new Date(Date.now() - 7200000).toISOString(),
+        messageId: '2'
+      }
+    ]
+  },
+  sendMessage: (messageId: string, text: string) => {
+    const { user, chatMessages } = get();
+    
+    const newMessage: ChatMessage = {
+      id: Date.now().toString(),
+      text,
+      senderId: user.id,
+      timestamp: new Date().toISOString(),
+      messageId
+    };
+
+    set((state) => ({
+      chatMessages: {
+        ...state.chatMessages,
+        [messageId]: [
+          ...(state.chatMessages[messageId] || []),
+          newMessage
+        ]
+      }
+    }));
+
+    set((state) => ({
+      messages: state.messages.map(msg =>
+        msg.id === messageId
+          ? { ...msg, lastMessage: text }
+          : msg
+      )
     }));
   },
 })); 
