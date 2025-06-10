@@ -4,33 +4,20 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useStore } from '../../store/useStore';
 import CarCard from '../../components/CarCard';
+import { FilterModal } from '../../components/FilterModal';
+import { SortModal } from '../../components/SortModal';
 
 export default function HomeScreen() {
   const router = useRouter();
   const { getSortedCars, setSortType, sortType, addToFavorites, removeFromFavorites, favorites } = useStore();
   const [searchQuery, setSearchQuery] = useState('');
+  const [showFilters, setShowFilters] = useState(false);
+  const [showSort, setShowSort] = useState(false);
   
   const cars = getSortedCars();
   const filteredCars = cars.filter(car => 
     car.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
-  const handleSort = () => {
-    const sortOptions = [
-      { label: 'По удаленности', value: 'distance' },
-      { label: 'По возрастанию цены', value: 'priceAsc' },
-      { label: 'По убыванию цены', value: 'priceDesc' },
-    ];
-    
-    // Alert.alert(
-    //   'Сортировка',
-    //   'Выберите тип сортировки',
-    //   sortOptions.map(option => ({
-    //     text: option.label,
-    //     onPress: () => setSortType(option.value as any),
-    //   }))
-    // );
-  };
 
   const handleFavoritePress = (car) => {
     const isFavorite = favorites.some(fav => fav.id === car.id);
@@ -54,6 +41,9 @@ export default function HomeScreen() {
             onChangeText={setSearchQuery}
           />
         </View>
+        <TouchableOpacity style={styles.iconButton} onPress={() => setShowFilters(true)}>
+          <Ionicons name="options" size={24} color="#000" />
+        </TouchableOpacity>
         <TouchableOpacity style={styles.iconButton}>
           <Ionicons name="map" size={24} color="#000" />
         </TouchableOpacity>
@@ -65,7 +55,7 @@ export default function HomeScreen() {
       {/* Блок 2: Заголовок и сортировка */}
       <View style={styles.titleBlock}>
         <Text style={styles.title}>Объявления</Text>
-        <TouchableOpacity style={styles.sortButton} onPress={handleSort}>
+        <TouchableOpacity style={styles.sortButton} onPress={() => setShowSort(true)}>
           <Ionicons name="funnel" size={24} color="#000" />
         </TouchableOpacity>
       </View>
@@ -83,6 +73,16 @@ export default function HomeScreen() {
         contentContainerStyle={styles.list}
         numColumns={2}
         columnWrapperStyle={styles.row}
+      />
+
+      <FilterModal 
+        visible={showFilters}
+        onClose={() => setShowFilters(false)}
+      />
+
+      <SortModal 
+        visible={showSort}
+        onClose={() => setShowSort(false)}
       />
     </View>
   );

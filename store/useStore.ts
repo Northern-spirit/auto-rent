@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { router } from 'expo-router';
 import { BookingStatus } from '../types';
 
+type CarType = 'Седан' | 'Купе' | 'Хатчбек' | 'Пикап' | 'Универсал' | 'Внедорожник' | 'Кабриолет';
+
 interface Car {
   id: string;
   title: string;
@@ -12,6 +14,7 @@ interface Car {
   distanceValue: number;
   image: string;
   description: string;
+  type: CarType;
 }
 
 interface Message {
@@ -55,7 +58,7 @@ interface Store {
   favorites: Car[];
   messages: Message[];
   user: User;
-  sortType: 'distance' | 'priceAsc' | 'priceDesc' | null;
+  sortType: 'priceAsc' | 'priceDesc' | 'distance' | 'rating' | null;
   addToFavorites: (car: Car) => void;
   removeFromFavorites: (carId: string) => void;
   getCarById: (id: string) => Car | undefined;
@@ -63,7 +66,7 @@ interface Store {
   updateUserName: (newName: string) => void;
   updateBalance: (amount: number) => void;
   logout: () => void;
-  setSortType: (type: 'distance' | 'priceAsc' | 'priceDesc' | null) => void;
+  setSortType: (type: Store['sortType']) => void;
   getSortedCars: () => Car[];
   updateMessageStatus: (messageId: string, newStatus: BookingStatus) => void;
   createBooking: (carId: string) => void;
@@ -73,6 +76,16 @@ interface Store {
   login: (email: string, password: string, role: 'buyer' | 'seller') => void;
   chatMessages: Record<string, ChatMessage[]>;
   sendMessage: (messageId: string, text: string) => void;
+  filters: {
+    carTypes: CarType[];
+    priceRange: {
+      min: number;
+      max: number;
+    };
+    distance: number;
+  };
+  setFilters: (filters: Partial<Store['filters']>) => void;
+  resetFilters: () => void;
 }
 
 export const useStore = create<Store>((set, get) => ({
@@ -87,6 +100,7 @@ export const useStore = create<Store>((set, get) => ({
       distanceValue: 2.5,
       image: 'https://cdn.apiweb.rolf.ru/storage/thumbnails/large/models/14-bmw/4921-x5_new/c65f831967794f342c1ab1d8464c7d58.png',
       description: 'Отличный автомобиль в идеальном состоянии',
+      type: 'Внедорожник',
     },
     {
       id: '2',
@@ -98,6 +112,7 @@ export const useStore = create<Store>((set, get) => ({
       distanceValue: 3.1,
       image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Mercedes-Benz_W206_IMG_6380.jpg/1280px-Mercedes-Benz_W206_IMG_6380.jpg',
       description: 'Комфортный седан для поездок по городу',
+      type: 'Седан',
     },
     {
       id: '3',
@@ -109,6 +124,7 @@ export const useStore = create<Store>((set, get) => ({
       distanceValue: 7,
       image: 'https://www.cmc-modelcars.de/wp-content/uploads/2022/07/M-076-MB-Uhlenhaut-9110-120.jpg',
       description: 'Красивый автомобиль, который можно использовать для фотосессий',
+      type: 'Купе',
     },
     {
       id: '4',
@@ -120,6 +136,7 @@ export const useStore = create<Store>((set, get) => ({
       distanceValue: 10,
       image: 'https://avatars.mds.yandex.net/get-verba/1030388/2a000001609484b1d12dbb9071b3b1af0943/cattouchret',
       description: 'Красивый автомобиль, который можно использовать для фотосессий',
+      type: 'Внедорожник',
     },
     {
       id: '5',
@@ -131,6 +148,7 @@ export const useStore = create<Store>((set, get) => ({
       distanceValue: 15,
       image: 'https://avatars.mds.yandex.net/get-verba/787013/2a0000018e9e9af4b958fe20fee73ac6b3ab/cattouchret',
       description: 'Кабриолет F-класса, задний привод. Автомат.',
+      type: 'Кабриолет',
     },
     {
       id: '6',
@@ -142,6 +160,7 @@ export const useStore = create<Store>((set, get) => ({
       distanceValue: 2,
       image: 'https://www.livecars.ru/l/news/2018/07/27/pagani_zonda_hp_barchetta/picture.jpg?1532704349',
       description: 'Люкс автомобиль, для властителя жизни',
+      type: 'Внедорожник',
     },    
     {
       id: '7',
@@ -153,6 +172,7 @@ export const useStore = create<Store>((set, get) => ({
       distanceValue: 10,
       image: 'https://images.drive.ru/i/0/60b9bed2b014c32d0e544a8b.jpg',
       description: 'Люкс автомобиль, для комфорта',
+      type: 'Внедорожник',
     },   
     {
       id: '8',
@@ -164,6 +184,7 @@ export const useStore = create<Store>((set, get) => ({
       distanceValue: 18,
       image: 'https://images.techinsider.ru/upload/img_cache/02e/02eda5b336dcf256fb6497515e5cd394_cropped_666x444.webp',
       description: 'Роскошный автомобиль люкс класса',
+      type: 'Седан',
     },
     {
       id: '9',
@@ -175,6 +196,7 @@ export const useStore = create<Store>((set, get) => ({
       distanceValue: 18,
       image: 'https://avatars.mds.yandex.net/get-verba/1604130/2a00000194642c1f37fb7bb5051ead3cfe35/cattouchret',
       description: 'Автомобиль премиум класса',
+      type: 'Внедорожник',
     },
     {
       id: '10',
@@ -186,6 +208,7 @@ export const useStore = create<Store>((set, get) => ({
       distanceValue: 40,
       image: 'https://avatars.mds.yandex.net/get-verba/787013/2a0000016095f2a1a5b600f86a2908ad8eab/cattouchret',
       description: 'Автомобиль бизнес класса',
+      type: 'Седан',
     },
   ],
   favorites: [
@@ -199,6 +222,7 @@ export const useStore = create<Store>((set, get) => ({
       distanceValue: 2.5,
       image: 'https://cdn.apiweb.rolf.ru/storage/thumbnails/large/models/14-bmw/4921-x5_new/c65f831967794f342c1ab1d8464c7d58.png',
       description: 'Отличный автомобиль в идеальном состоянии',
+      type: 'Внедорожник',
     },
     {
       id: '2',
@@ -210,6 +234,7 @@ export const useStore = create<Store>((set, get) => ({
       distanceValue: 3.1,
       image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Mercedes-Benz_W206_IMG_6380.jpg/1280px-Mercedes-Benz_W206_IMG_6380.jpg',
       description: 'Комфортный седан для поездок по городу',
+      type: 'Седан',
     },
   ],
   messages: [
@@ -295,19 +320,56 @@ export const useStore = create<Store>((set, get) => ({
   },
   setSortType: (type) => set({ sortType: type }),
   getSortedCars: () => {
-    const { cars, sortType } = get();
-    const sortedCars = [...cars];
-    
-    switch (sortType) {
-      case 'distance':
-        return sortedCars.sort((a, b) => a.distanceValue - b.distanceValue);
-      case 'priceAsc':
-        return sortedCars.sort((a, b) => a.price - b.price);
-      case 'priceDesc':
-        return sortedCars.sort((a, b) => b.price - a.price);
-      default:
-        return sortedCars;
-    }йцу
+    const { cars, filters, sortType } = get();
+    let filteredCars = [...cars];
+
+    // Применяем фильтры только если они активны
+    const hasActiveFilters = 
+        filters.carTypes.length > 0 || 
+        filters.priceRange.min > 3000 || 
+        filters.priceRange.max < 10000 || 
+        filters.distance < 10;
+
+    if (hasActiveFilters) {
+        if (filters.carTypes.length > 0) {
+            filteredCars = filteredCars.filter(car => 
+                filters.carTypes.includes(car.type as CarType)
+            );
+        }
+
+        if (filters.priceRange.min > 3000 || filters.priceRange.max < 10000) {
+            filteredCars = filteredCars.filter(car => 
+                car.price >= filters.priceRange.min && 
+                car.price <= filters.priceRange.max
+            );
+        }
+
+        if (filters.distance < 10) {
+            filteredCars = filteredCars.filter(car => 
+                car.distanceValue <= filters.distance
+            );
+        }
+    }
+
+    // Применяем сортировку
+    if (sortType) {
+        switch (sortType) {
+            case 'priceAsc':
+                filteredCars.sort((a, b) => a.price - b.price);
+                break;
+            case 'priceDesc':
+                filteredCars.sort((a, b) => b.price - a.price);
+                break;
+            case 'distance':
+                filteredCars.sort((a, b) => a.distanceValue - b.distanceValue);
+                break;
+            case 'rating':
+                filteredCars.sort((a, b) => b.rating - a.rating);
+                break;
+        }
+    }
+
+    return filteredCars;
   },
   updateMessageStatus: (messageId, newStatus) => 
     set((state) => ({
@@ -451,4 +513,22 @@ export const useStore = create<Store>((set, get) => ({
       )
     }));
   },
+  filters: {
+    carTypes: [],
+    priceRange: {
+      min: 3000,
+      max: 10000
+    },
+    distance: 10
+  },
+  setFilters: (newFilters) => set((state) => ({
+    filters: { ...state.filters, ...newFilters }
+  })),
+  resetFilters: () => set((state) => ({
+    filters: {
+      carTypes: [],
+      priceRange: { min: 3000, max: 10000 },
+      distance: 10
+    }
+  })),
 })); 

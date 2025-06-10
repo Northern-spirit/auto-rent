@@ -35,8 +35,9 @@ export default function ChatScreen() {
   const router = useRouter();
   const { messages, user, processBooking, updateBalance, chatMessages, sendMessage } = useStore();
   const [messageInput, setMessageInput] = useState('');
+  const [review, setReview] = useState('');
   const flatListRef = useRef<FlatList>(null);
-  
+
   const message = messages.find(m => m.id === id);
   const currentChatMessages = chatMessages[id as string] || [];
 
@@ -56,7 +57,7 @@ export default function ChatScreen() {
         processBooking(message.id);
       } else {
         console.log('Недостаточно средств');
-        Alert.alert('Ошибка', 'Недостаточно средств'); 
+        Alert.alert('Ошибка', 'Недостаточно средств');
       }
     } else {
       processBooking(message.id);
@@ -73,6 +74,10 @@ export default function ChatScreen() {
     setTimeout(() => {
       flatListRef.current?.scrollToEnd({ animated: true });
     }, 100);
+  };
+
+  const handleReview = () => {
+    console.log(review);
   };
 
   const renderMessage = ({ item }: { item: ChatMessage }) => {
@@ -94,7 +99,7 @@ export default function ChatScreen() {
   if (!message) return null;
 
   return (
-    <KeyboardAvoidingView 
+    <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
@@ -111,8 +116,8 @@ export default function ChatScreen() {
         <Text style={styles.carTitle}>{message.title}</Text>
         <Text style={styles.carDescription}>{message.description}</Text>
         <Text style={styles.carPrice}>{message.price}</Text>
-        
-        <TouchableOpacity 
+
+        <TouchableOpacity
           style={[styles.statusButton, { backgroundColor: getStatusColor(message.status as BookingStatus) }]}
           onPress={handleStatusPress}
         >
@@ -124,11 +129,32 @@ export default function ChatScreen() {
             <Text style={styles.balanceText}>
               Ваш баланс: {user.balance.toLocaleString()} ₽
             </Text>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.payButton}
               onPress={handleStatusPress}
             >
               <Text style={styles.payButtonText}>Оплатить</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        {user.role === 'buyer' && message.status === 'ожидает отзыв' && (
+          <View style={styles.reviewBlock}>
+            <Text style={styles.reviewTitle}>Как все прошло?</Text>
+            <Text style={styles.reviewDescription}>Здесь вы можете оставить
+            отзыв машине:</Text>
+
+            <TextInput
+              style={styles.reviewInput}
+              placeholder="Классная тачка, как новая. Ездит очень быстро!"
+              value={review}
+              onChangeText={setReview}
+              multiline
+            />
+            <TouchableOpacity
+              style={styles.reviewButton}
+              onPress={handleReview}
+            >
+              <Text style={styles.reviewButtonText}>Отправить</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -151,7 +177,7 @@ export default function ChatScreen() {
           placeholder="Введите сообщение..."
           multiline
         />
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.sendButton, !messageInput.trim() && styles.sendButtonDisabled]}
           onPress={handleSend}
           disabled={!messageInput.trim()}
@@ -297,5 +323,45 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginLeft: 16,
+  },
+  reviewBlock: {
+    marginTop: 16,
+    padding: 20,
+    borderWidth: 1,
+    borderRadius: 20,
+  },
+  reviewTitle: {
+    fontSize: 20,
+    fontFamily: 'Manrope',
+    fontWeight: '500',
+    marginBottom: 18,
+  },
+  reviewDescription: {
+    fontSize: 20,
+    fontWeight: '400',
+    fontFamily: 'Manrope',
+    marginBottom: 8,
+  },
+  reviewInput: {
+    padding: 12,
+    marginBottom: 8,
+    borderWidth: 2,
+    borderColor: '#F3F3F3',
+    borderRadius: 20,
+    minHeight: 140,
+    textAlignVertical: 'top', 
+  },
+  reviewButton: {
+    padding: 12,
+    borderRadius: 16,
+    backgroundColor: '#9980FF',
+    width: 180,
+    alignSelf: 'center',
+  },
+  reviewButtonText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#fff',
+    textAlign: 'center',
   },
 }); 
