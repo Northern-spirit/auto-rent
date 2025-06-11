@@ -23,10 +23,7 @@ export default function CarDetailScreen() {
   };
 
   const handleBookPress = () => {
-    if (user.role === 'buyer') {
-      createBooking(car.id);
-      router.push('/messages');
-    }
+    router.push(`/booking-confirmation?carId=${car.id}`);
   };
 
   return (
