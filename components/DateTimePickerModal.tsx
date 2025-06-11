@@ -96,7 +96,6 @@ export function DateTimePickerModal({ visible, onClose, onSave }: DateTimePicker
                         <View style={styles.blocksContainer}>
                             {/* Календарь слева */}
                             <View style={styles.calendarBlock}>
-                                <Text style={styles.blockTitle}>Календарь</Text>
                                 <Calendar
                                     markingType={'period'}
                                     markedDates={getMarkedDates()}
@@ -112,7 +111,6 @@ export function DateTimePickerModal({ visible, onClose, onSave }: DateTimePicker
                             </View>
                             {/* Время справа */}
                             <View style={styles.timeBlock}>
-                                <Text style={styles.blockTitle}>Время</Text>
                                 <View style={styles.timeSection}>
                                     <View style={styles.timeRow}>
                                         <Text style={styles.timeLabel}>Начало</Text>
@@ -250,7 +248,7 @@ const styles = StyleSheet.create({
     blocksContainer: {
         flexDirection: 'row',
         flex: 1,
-        gap: 16,
+        // gap: 16,
     },
     calendarBlock: {
         flex: 1.2,
@@ -267,14 +265,14 @@ const styles = StyleSheet.create({
     },
     timeBlock: {
         flex: 1,
-        marginLeft: 8,
+        // marginLeft: 8,
     },
     timeSection: {
         flex: 1,
         justifyContent: 'center',
     },
     timeRow: {
-        marginBottom: 18,
+        // marginBottom: 18,
     },
     timeLabel: {
         fontSize: 15,
