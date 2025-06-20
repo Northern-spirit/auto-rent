@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useStore } from '../store/useStore';
@@ -53,10 +53,11 @@ export default function BookingConfirmationScreen() {
         return diffHours;
     };
 
-    const getProgressWidth = () => {
+    const getTotalPrice = () => {
         const duration = getRentalDuration();
-        const maxDuration = 96; // 4 дня в часах
-        return Math.min((duration / maxDuration) * 100, 100);
+        const hoursPerDay = 24;
+        const days = Math.ceil(duration / hoursPerDay);
+        return car.price * days;
     };
 
     return (
@@ -65,61 +66,63 @@ export default function BookingConfirmationScreen() {
                 <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
                     <Ionicons name="arrow-back" size={24} color="#000" />
                 </TouchableOpacity>
+                <Text style={styles.title}>Подтверждение бронирования</Text>
             </View>
 
-            <View style={styles.content}>
-                <Text style={styles.title}>Почти готово</Text>
-                <Text style={styles.subtitle}>
-                    Эта машина доступна для аренды от 1 часа до 4 дней
-                </Text>
-
-                <Text style={styles.dateTitle}>Выберите дату начала и окончания аренды</Text>
-
-                <View style={styles.dateInputsContainer}>
-                    <TouchableOpacity 
-                        style={styles.dateInput}
-                        onPress={() => setShowDateTimePicker(true)}
-                    >
-                        <Text style={styles.dateInputLabel}>От</Text>
-                        <Text style={styles.dateInputValue}>
-                            {startDate ? formatDateTime(startDate) : 'Выберите время'}
-                        </Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity 
-                        style={styles.dateInput}
-                        onPress={() => setShowDateTimePicker(true)}
-                    >
-                        <Text style={styles.dateInputLabel}>До</Text>
-                        <Text style={styles.dateInputValue}>
-                            {endDate ? formatDateTime(endDate) : 'Выберите время'}
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-
-                <View style={styles.progressContainer}>
-                    <View style={styles.progressBar}>
-                        <View 
-                            style={[
-                                styles.progressFill,
-                                { width: `${getProgressWidth()}%` }
-                            ]} 
-                        />
-                    </View>
-                    <View style={styles.progressLabels}>
-                        <Text style={styles.progressLabel}>1 ч</Text>
-                        <Text style={styles.progressLabel}>4д</Text>
-                    </View>
+            <View style={styles.carInfo}>
+                <Image source={{ uri: car.image }} style={styles.carImage} />
+                <View style={styles.carDetails}>
+                    <Text style={styles.carTitle}>{car.title}</Text>
+                    <Text style={styles.carPrice}>{car.priceDisplay}</Text>
+                    <Text style={styles.carCharacteristics}>
+                        {car.age} лет • {car.acceleration}с до 100км/ч • {car.horsepower} л.с.
+                    </Text>
                 </View>
             </View>
 
-            <View style={styles.footer}>
+            <View style={styles.dateTimeSection}>
+                <Text style={styles.sectionTitle}>Выберите время аренды</Text>
+                
+                <TouchableOpacity 
+                    style={styles.dateTimeButton}
+                    onPress={() => setShowDateTimePicker(true)}
+                >
+                    <Ionicons name="calendar" size={20} color="#007AFF" />
+                    <Text style={styles.dateTimeButtonText}>
+                        {startDate && endDate 
+                            ? `${formatDateTime(startDate)} - ${formatDateTime(endDate)}`
+                            : 'Выбрать дату и время'
+                        }
+                    </Text>
+                </TouchableOpacity>
+
+                {startDate && endDate && (
+                    <View style={styles.durationInfo}>
+                        <Text style={styles.durationText}>
+                            Продолжительность: {getRentalDuration()} часов
+                        </Text>
+                        <Text style={styles.totalPrice}>
+                            Итого: {getTotalPrice().toLocaleString()} ₽
+                        </Text>
+                    </View>
+                )}
+            </View>
+
+            <View style={styles.ownerInfo}>
+                <Text style={styles.sectionTitle}>Информация о владельце</Text>
+                <Text style={styles.ownerName}>{car.ownerName}</Text>
+            </View>
+
+            <View style={styles.confirmButtonContainer}>
                 <Button 
-                    title="Подтвердить бронирование" 
+                    title="Подтвердить бронирование"
                     onPress={handleConfirmBooking}
                     disabled={!startDate || !endDate}
+                    style={styles.confirmButton}
                 />
             </View>
+
+            
 
             <DateTimePickerModal
                 visible={showDateTimePicker}
@@ -136,76 +139,102 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     header: {
-        padding: 16,
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 20,
         borderBottomWidth: 1,
-        borderBottomColor: '#E2E2E2',
+        borderBottomColor: '#E5E5E5',
     },
     backButton: {
-        padding: 4,
-    },
-    content: {
-        padding: 16,
-        flex: 1,
+        marginRight: 16,
     },
     title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 8,
+        fontSize: 20,
+        fontWeight: '600',
     },
-    subtitle: {
+    carInfo: {
+        flexDirection: 'row',
+        padding: 20,
+        borderBottomWidth: 1,
+        borderBottomColor: '#E5E5E5',
+    },
+    carImage: {
+        width: 80,
+        height: 60,
+        borderRadius: 8,
+        marginRight: 16,
+    },
+    carDetails: {
+        flex: 1,
+    },
+    carTitle: {
+        fontSize: 18,
+        fontWeight: '600',
+        marginBottom: 4,
+    },
+    carPrice: {
         fontSize: 16,
-        color: '#666',
-        marginBottom: 32,
+        color: '#007AFF',
+        fontWeight: '600',
+        marginBottom: 4,
     },
-    dateTitle: {
+    carCharacteristics: {
+        fontSize: 14,
+        color: '#666',
+    },
+    dateTimeSection: {
+        padding: 20,
+        borderBottomWidth: 1,
+        borderBottomColor: '#E5E5E5',
+    },
+    sectionTitle: {
         fontSize: 18,
         fontWeight: '600',
         marginBottom: 16,
     },
-    dateInputsContainer: {
-        marginBottom: 32,
-    },
-    dateInput: {
-        borderWidth: 1,
-        borderColor: '#E2E2E2',
-        borderRadius: 12,
+    dateTimeButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
         padding: 16,
-        marginBottom: 12,
+        borderWidth: 1,
+        borderColor: '#007AFF',
+        borderRadius: 8,
+        marginBottom: 16,
     },
-    dateInputLabel: {
-        fontSize: 14,
-        color: '#666',
-        marginBottom: 4,
-    },
-    dateInputValue: {
+    dateTimeButtonText: {
+        marginLeft: 8,
         fontSize: 16,
-        color: '#000',
+        color: '#007AFF',
     },
-    progressContainer: {
-        marginBottom: 32,
+    durationInfo: {
+        backgroundColor: '#F8F9FA',
+        padding: 16,
+        borderRadius: 8,
     },
-    progressBar: {
-        height: 24,
-        backgroundColor: '#E2E2E2',
-        borderRadius: 12,
+    durationText: {
+        fontSize: 16,
         marginBottom: 8,
     },
-    progressFill: {
-        height: '100%',
-        backgroundColor: '#9980FF',
-        borderRadius: 12,
+    totalPrice: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: '#007AFF',
     },
-    progressLabels: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+    ownerInfo: {
+        padding: 20,
+        borderBottomWidth: 1,
+        borderBottomColor: '#E5E5E5',
     },
-    progressLabel: {
-        fontSize: 14,
-        color: '#666',
+    ownerName: {
+        fontSize: 16,
+        color: '#333',
     },
-    footer: {
-        padding: 16,
-        borderTopWidth: 1,
-        borderTopColor: '#E2E2E2',
+    confirmButtonContainer: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    confirmButton: {
+        width: 263,
     },
 }); 

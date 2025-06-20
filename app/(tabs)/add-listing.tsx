@@ -40,6 +40,18 @@ export default function AddListingScreen() {
     setImages(images.filter((_, i) => i !== index));
   };
 
+  const handleNext = () => {
+    if (images.length === 0) {
+      alert('Пожалуйста, загрузите хотя бы одно изображение');
+      return;
+    }
+    // Передаем первое изображение на следующую страницу
+    router.push({
+      pathname: '/add-listing/registration-data',
+      params: { selectedImage: images[0] }
+    });
+  };
+
   const renderThumbnails = () => {
     const rows = [];
     let currentRow = [];
@@ -117,7 +129,7 @@ export default function AddListingScreen() {
       {(images.length > 0 || videoUrl) && (
         <Button
           title="Далее"
-          onPress={() => router.push('/add-listing/registration-data')}
+          onPress={handleNext}
           style={styles.nextButton}
         />
       )}

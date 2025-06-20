@@ -1,13 +1,21 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Button } from '../../components/Button';
 import { Input } from '../../components/Input';
 
 export default function RegistrationDataScreen() {
   const router = useRouter();
+  const { selectedImage } = useLocalSearchParams();
   const [licensePlate, setLicensePlate] = useState('');
   const [vinNumber, setVinNumber] = useState('');
+
+  const handleNext = () => {
+    router.push({
+      pathname: '/add-listing/characteristics',
+      params: { selectedImage: selectedImage as string }
+    });
+  };
 
   return (
     <View style={styles.container}>
@@ -36,7 +44,7 @@ export default function RegistrationDataScreen() {
         />
         <Button
           title="Далее"
-          onPress={() => router.push('/add-listing/characteristics')}
+          onPress={handleNext}
           style={styles.button}
         />
       </View>

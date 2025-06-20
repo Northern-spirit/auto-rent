@@ -13,9 +13,9 @@ export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [showSort, setShowSort] = useState(false);
-  
+
   const cars = getSortedCars();
-  const filteredCars = cars.filter(car => 
+  const filteredCars = cars.filter(car =>
     car.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -42,16 +42,29 @@ export default function HomeScreen() {
           />
         </View>
         <TouchableOpacity style={styles.iconButton} onPress={() => setShowFilters(true)}>
-          <Ionicons name="options" size={24} color="#000" />
+          <Image
+            source={require('../../assets/images/home/filter.png')}
+            style={styles.iconButton}
+            resizeMode="cover"
+          />
         </TouchableOpacity>
+
         <TouchableOpacity style={styles.iconButton}>
-          <Ionicons name="map" size={24} color="#000" />
+          <Image
+            source={require('../../assets/images/home/mapImage.png')}
+            style={styles.iconButton}
+            resizeMode="cover"
+          />
         </TouchableOpacity>
-        <TouchableOpacity 
-          style={styles.iconButton} 
+        <TouchableOpacity
+          style={styles.iconButton}
           onPress={() => router.push('/notifications')}
         >
-          <Ionicons name="notifications" size={24} color="#000" />
+          <Image
+            source={require('../../assets/images/home/notification.png')}
+            style={styles.iconButton}
+            resizeMode="cover"
+          />
         </TouchableOpacity>
       </View>
 
@@ -59,7 +72,11 @@ export default function HomeScreen() {
       <View style={styles.titleBlock}>
         <Text style={styles.title}>Объявления</Text>
         <TouchableOpacity style={styles.sortButton} onPress={() => setShowSort(true)}>
-          <Ionicons name="funnel" size={24} color="#000" />
+          <Image
+            source={require('../../assets/images/home/arrowSort.png')}
+            style={styles.iconButton}
+            resizeMode="cover"
+          />
         </TouchableOpacity>
       </View>
 
@@ -67,7 +84,7 @@ export default function HomeScreen() {
       <FlatList
         data={filteredCars}
         renderItem={({ item }) => (
-          <CarCard 
+          <CarCard
             car={item}
             onFavoritePress={() => handleFavoritePress(item)}
           />
@@ -78,12 +95,12 @@ export default function HomeScreen() {
         columnWrapperStyle={styles.row}
       />
 
-      <FilterModal 
+      <FilterModal
         visible={showFilters}
         onClose={() => setShowFilters(false)}
       />
 
-      <SortModal 
+      <SortModal
         visible={showSort}
         onClose={() => setShowSort(false)}
       />
@@ -96,6 +113,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     padding: 16,
+    paddingTop: 25,
   },
   header: {
     flexDirection: 'row',

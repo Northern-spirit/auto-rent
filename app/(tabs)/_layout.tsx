@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { Image } from 'react-native';
 
 export default function TabLayout() {
   return (
@@ -7,6 +7,7 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: '#007AFF',
         tabBarInactiveTintColor: '#8E8E93',
+        tabBarShowLabel: false,
         tabBarStyle: {
           height: 60,
           paddingBottom: 8,
@@ -18,35 +19,60 @@ export default function TabLayout() {
         name="map"
         options={{
           title: 'Главная',
-          tabBarIcon: ({ color }) => <Ionicons name="home" size={24} color={color} />,
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={require('../../assets/images/tabBar/car.png')}
+              style={{ width: 24, height: 24, opacity: focused ? 1 : 0.5 }}
+            />
+          ),
         }}
       />
       <Tabs.Screen
         name="favorites"
         options={{
           title: 'Избранное',
-          tabBarIcon: ({ color }) => <Ionicons name="heart" size={24} color={color} />,
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={require('../../assets/images/tabBar/heart.png')}
+              style={{ width: 24, height: 24, opacity: focused ? 1 : 0.5 }}
+            />
+          ),
         }}
       />
       <Tabs.Screen
         name="add-listing"
         options={{
           title: 'Добавить',
-          tabBarIcon: ({ color }) => <Ionicons name="add-circle" size={24} color={color} />,
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={require('../../assets/images/tabBar/plus.png')}
+              style={{ width: 24, height: 24, opacity: focused ? 1 : 0.5 }}
+            />
+          ),
         }}
       />
       <Tabs.Screen
         name="messages"
         options={{
           title: 'Сообщения',
-          tabBarIcon: ({ color }) => <Ionicons name="chatbubbles" size={24} color={color} />,
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={require('../../assets/images/tabBar/message.png')}
+              style={{ width: 24, height: 24, opacity: focused ? 1 : 0.5 }}
+            />
+          ),
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: 'Профиль',
-          tabBarIcon: ({ color }) => <Ionicons name="person" size={24} color={color} />,
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={require('../../assets/images/tabBar/user-profile.png')}
+              style={{ width: 24, height: 24, opacity: focused ? 1 : 0.5 }}
+            />
+          ),
         }}
       />
     </Tabs>

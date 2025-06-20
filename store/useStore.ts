@@ -15,6 +15,13 @@ interface Car {
   image: string;
   description: string;
   type: CarType;
+  age: number;
+  acceleration: number;
+  horsepower: number;
+  year: number;
+  mileage: number;
+  ownerName: string;
+  reviewsCount: number;
 }
 
 interface Message {
@@ -86,6 +93,7 @@ interface Store {
   };
   setFilters: (filters: Partial<Store['filters']>) => void;
   resetFilters: () => void;
+  addCar: (carData: Partial<Car>) => void;
 }
 
 export const useStore = create<Store>((set, get) => ({
@@ -101,6 +109,13 @@ export const useStore = create<Store>((set, get) => ({
       image: 'https://cdn.apiweb.rolf.ru/storage/thumbnails/large/models/14-bmw/4921-x5_new/c65f831967794f342c1ab1d8464c7d58.png',
       description: 'Отличный автомобиль в идеальном состоянии',
       type: 'Внедорожник',
+      age: 3,
+      acceleration: 6.1,
+      horsepower: 340,
+      year: 2021,
+      mileage: 45000,
+      ownerName: 'Александр Петров',
+      reviewsCount: 12
     },
     {
       id: '2',
@@ -113,6 +128,13 @@ export const useStore = create<Store>((set, get) => ({
       image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Mercedes-Benz_W206_IMG_6380.jpg/1280px-Mercedes-Benz_W206_IMG_6380.jpg',
       description: 'Комфортный седан для поездок по городу',
       type: 'Седан',
+      age: 5,
+      acceleration: 7.8,
+      horsepower: 184,
+      year: 2019,
+      mileage: 78000,
+      ownerName: 'Мария Сидорова',
+      reviewsCount: 8
     },
     {
       id: '3',
@@ -125,30 +147,51 @@ export const useStore = create<Store>((set, get) => ({
       image: 'https://www.cmc-modelcars.de/wp-content/uploads/2022/07/M-076-MB-Uhlenhaut-9110-120.jpg',
       description: 'Красивый автомобиль, который можно использовать для фотосессий',
       type: 'Купе',
+      age: 2,
+      acceleration: 6.3,
+      horsepower: 252,
+      year: 2022,
+      mileage: 32000,
+      ownerName: 'Дмитрий Козлов',
+      reviewsCount: 15
     },
     {
       id: '4',
       title: 'Ferrari 250 GTO',
       price: 1000000,
       priceDisplay: '1000000 ₽/сутки',
-      rating: 5,
+      rating: 3,
       distance: '10 км',
       distanceValue: 10,
       image: 'https://avatars.mds.yandex.net/get-verba/1030388/2a000001609484b1d12dbb9071b3b1af0943/cattouchret',
       description: 'Красивый автомобиль, который можно использовать для фотосессий',
       type: 'Внедорожник',
+      age: 7,
+      acceleration: 9.2,
+      horsepower: 110,
+      year: 2017,
+      mileage: 120000,
+      ownerName: 'Елена Волкова',
+      reviewsCount: 6
     },
     {
       id: '5',
       title: 'Rolls-Royce Boat Tail',
       price: 30000,
       priceDisplay: '30000 ₽/сутки',
-      rating: 5,
+      rating: 2,
       distance: '15 км',
       distanceValue: 15,
       image: 'https://avatars.mds.yandex.net/get-verba/787013/2a0000018e9e9af4b958fe20fee73ac6b3ab/cattouchret',
       description: 'Кабриолет F-класса, задний привод. Автомат.',
       type: 'Кабриолет',
+      age: 1,
+      acceleration: 5.9,
+      horsepower: 571,
+      year: 2023,
+      mileage: 1000,
+      ownerName: 'Алексей Иванов',
+      reviewsCount: 2
     },
     {
       id: '6',
@@ -161,6 +204,13 @@ export const useStore = create<Store>((set, get) => ({
       image: 'https://www.livecars.ru/l/news/2018/07/27/pagani_zonda_hp_barchetta/picture.jpg?1532704349',
       description: 'Люкс автомобиль, для властителя жизни',
       type: 'Внедорожник',
+      age: 2,
+      acceleration: 3.7,
+      horsepower: 750,
+      year: 2021,
+      mileage: 3000,
+      ownerName: 'Екатерина Петрова',
+      reviewsCount: 10
     },    
     {
       id: '7',
@@ -173,6 +223,13 @@ export const useStore = create<Store>((set, get) => ({
       image: 'https://images.drive.ru/i/0/60b9bed2b014c32d0e544a8b.jpg',
       description: 'Люкс автомобиль, для комфорта',
       type: 'Внедорожник',
+      age: 1,
+      acceleration: 2.4,
+      horsepower: 1500,
+      year: 2022,
+      mileage: 1000,
+      ownerName: 'Сергей Кузнецов',
+      reviewsCount: 4
     },   
     {
       id: '8',
@@ -185,6 +242,13 @@ export const useStore = create<Store>((set, get) => ({
       image: 'https://images.techinsider.ru/upload/img_cache/02e/02eda5b336dcf256fb6497515e5cd394_cropped_666x444.webp',
       description: 'Роскошный автомобиль люкс класса',
       type: 'Седан',
+      age: 1,
+      acceleration: 2.7,
+      horsepower: 850,
+      year: 2023,
+      mileage: 500,
+      ownerName: 'Ольга Иванова',
+      reviewsCount: 2
     },
     {
       id: '9',
@@ -197,18 +261,32 @@ export const useStore = create<Store>((set, get) => ({
       image: 'https://avatars.mds.yandex.net/get-verba/1604130/2a00000194642c1f37fb7bb5051ead3cfe35/cattouchret',
       description: 'Автомобиль премиум класса',
       type: 'Внедорожник',
+      age: 1,
+      acceleration: 2.8,
+      horsepower: 1600,
+      year: 2023,
+      mileage: 1000,
+      ownerName: 'Ирина Петрова',
+      reviewsCount: 3
     },
     {
       id: '10',
       title: 'Maybach Exelero',
       price: 70000,
       priceDisplay: '70000 ₽/сутки',
-      rating: 5,
+      rating: 2,
       distance: '40 км',
       distanceValue: 40,
       image: 'https://avatars.mds.yandex.net/get-verba/787013/2a0000016095f2a1a5b600f86a2908ad8eab/cattouchret',
       description: 'Автомобиль бизнес класса',
       type: 'Седан',
+      age: 1,
+      acceleration: 4.2,
+      horsepower: 612,
+      year: 2022,
+      mileage: 5000,
+      ownerName: 'Анна Кузнецова',
+      reviewsCount: 1
     },
   ],
   favorites: [
@@ -223,6 +301,13 @@ export const useStore = create<Store>((set, get) => ({
       image: 'https://cdn.apiweb.rolf.ru/storage/thumbnails/large/models/14-bmw/4921-x5_new/c65f831967794f342c1ab1d8464c7d58.png',
       description: 'Отличный автомобиль в идеальном состоянии',
       type: 'Внедорожник',
+      age: 3,
+      acceleration: 6.1,
+      horsepower: 340,
+      year: 2021,
+      mileage: 45000,
+      ownerName: 'Александр Петров',
+      reviewsCount: 12
     },
     {
       id: '2',
@@ -235,6 +320,13 @@ export const useStore = create<Store>((set, get) => ({
       image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Mercedes-Benz_W206_IMG_6380.jpg/1280px-Mercedes-Benz_W206_IMG_6380.jpg',
       description: 'Комфортный седан для поездок по городу',
       type: 'Седан',
+      age: 5,
+      acceleration: 7.8,
+      horsepower: 184,
+      year: 2019,
+      mileage: 78000,
+      ownerName: 'Мария Сидорова',
+      reviewsCount: 8
     },
   ],
   messages: [
@@ -278,7 +370,7 @@ export const useStore = create<Store>((set, get) => ({
     city: 'Москва',
     rating: 4.8,
     reviewsCount: 12,
-    balance: 35000,
+    balance: 350000000,
   },
   sortType: null,
   addToFavorites: (car) => 
@@ -441,8 +533,6 @@ export const useStore = create<Store>((set, get) => ({
       },
     })),
   login: (email: string, password: string, role: 'buyer' | 'seller') => {
-    // Здесь в реальном приложении будет проверка email и password
-    // Сейчас просто создаем пользователя с выбранной ролью
     set((state) => ({
       user: {
         id: '1',
@@ -453,7 +543,7 @@ export const useStore = create<Store>((set, get) => ({
         city: 'Москва',
         rating: 4.8,
         reviewsCount: 12,
-        balance: 15000,
+        balance: 150000000,
       }
     }));
   },
@@ -531,4 +621,32 @@ export const useStore = create<Store>((set, get) => ({
       distance: 10
     }
   })),
+  addCar: (carData: Partial<Car>) => {
+    const { user } = get();
+    const newCar: Car = {
+      id: Date.now().toString(),
+      title: carData.title || '',
+      price: carData.price || 0,
+      priceDisplay: `${carData.price || 0} ₽/день`,
+      rating: Math.random() * 2 + 3, // Рейтинг от 3 до 5
+      distance: `${Math.floor(Math.random() * 10) + 1} км`,
+      distanceValue: Math.floor(Math.random() * 10) + 1,
+      image: carData.image || 'https://avatars.mds.yandex.net/get-verba/787013/2a00000190ba929fe36ec6c6fb366b130924/cattouchret',
+      description: carData.description || 'Описание автомобиля',
+      type: 'Седан', // Дефолтный тип
+      // Новые поля с дефолтными значениями
+      age: carData.age || 3,
+      acceleration: carData.acceleration || 7.0,
+      horsepower: carData.horsepower || 150,
+      year: carData.year || 2021,
+      mileage: carData.mileage || 50000,
+      ownerName: user.name || 'Владелец',
+      reviewsCount: Math.floor(Math.random() * 20) + 1,
+      sellerId: user.id,
+    };
+
+    set((state) => ({
+      cars: [newCar, ...state.cars] // Добавляем новое объявление в начало списка
+    }));
+  },
 })); 

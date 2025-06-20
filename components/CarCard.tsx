@@ -4,18 +4,19 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useStore } from '../store/useStore';
 
-interface Car {
-  id: string;
-  title: string;
-  price: string;
-  priceDisplay: string;
-  rating: number;
-  distance: string;
-  image: string;
-}
-
 interface CarCardProps {
-  car: Car;
+  car: {
+    id: string;
+    title: string;
+    priceDisplay: string;
+    rating: number;
+    distance: string;
+    image: string;
+    age: number;
+    acceleration: number;
+    horsepower: number;
+    reviewsCount: number;
+  };
   showFavoriteButton?: boolean;
   onFavoritePress?: () => void;
 }
@@ -24,6 +25,17 @@ export default function CarCard({ car, showFavoriteButton = true, onFavoritePres
   const router = useRouter();
   const { favorites } = useStore();
   const isFavorite = favorites.some(fav => fav.id === car.id);
+
+  // Добавляем функцию для определения картинки рейтинга
+  const getRatingImage = (rating: number) => {
+    if (rating >= 4 && rating <= 5) {
+      return require('../assets/images/home/greenCar.png');
+    } else if (rating >= 3 && rating < 4) {
+      return require('../assets/images/home/yellowCar.png');
+    } else {
+      return require('../assets/images/home/redCar.png');
+    }
+  };
 
   return (
     <TouchableOpacity 
@@ -53,10 +65,23 @@ export default function CarCard({ car, showFavoriteButton = true, onFavoritePres
       </View>
       <Text style={styles.carTitle}>{car.title}</Text>
       <Text style={styles.carPrice}>{car.priceDisplay}</Text>
+      
+      {/* Новый блок с характеристиками */}
+      <View style={styles.characteristics}>
+        <Text style={styles.characteristicText}>
+          {car.age} лет • {car.acceleration}с до 100км/ч • {car.horsepower} л.с.
+        </Text>
+      </View>
+      
       <View style={styles.carFooter}>
         <View style={styles.rating}>
-          <Ionicons name="star" size={16} color="#FFD700" />
+          <Image 
+            source={getRatingImage(car.rating)} 
+            style={styles.ratingImage}
+            resizeMode="contain"
+          />
           <Text style={styles.ratingText}>{car.rating}</Text>
+          <Text style={styles.reviewsCount}>({car.reviewsCount})</Text>
         </View>
         <Text style={styles.distance}>{car.distance}</Text>
       </View>
@@ -97,6 +122,14 @@ const styles = StyleSheet.create({
     color: '#007AFF',
     marginBottom: 4,
   },
+  characteristics: {
+    marginBottom: 8,
+  },
+  characteristicText: {
+    fontSize: 12,
+    color: '#666',
+    lineHeight: 16,
+  },
   carFooter: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -106,10 +139,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  ratingImage: {
+    width: 20,
+    height: 20,
+    marginRight: 4,
+  },
   ratingText: {
-    marginLeft: 4,
     fontSize: 14,
     color: '#666',
+    marginRight: 4,
+  },
+  reviewsCount: {
+    fontSize: 12,
+    color: '#999',
   },
   distance: {
     fontSize: 14,
