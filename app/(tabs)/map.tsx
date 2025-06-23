@@ -30,7 +30,6 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Блок 1: Поиск и иконки */}
       <View style={styles.header}>
         <View style={styles.searchContainer}>
           <Ionicons name="search" size={20} color="#8E8E93" style={styles.searchIcon} />

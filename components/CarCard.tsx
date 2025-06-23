@@ -26,7 +26,6 @@ export default function CarCard({ car, showFavoriteButton = true, onFavoritePres
   const { favorites } = useStore();
   const isFavorite = favorites.some(fav => fav.id === car.id);
 
-  // Добавляем функцию для определения картинки рейтинга
   const getRatingImage = (rating: number) => {
     if (rating >= 4 && rating <= 5) {
       return require('../assets/images/home/greenCar.png');

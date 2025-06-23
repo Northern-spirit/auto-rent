@@ -19,6 +19,16 @@ export default function ProfileScreen() {
     );
   }
 
+  const getRatingImage = (rating: number) => {
+    if (rating >= 4 && rating <= 5) {
+      return require('../../assets/images/home/greenCar.png');
+    } else if (rating >= 3 && rating < 4) {
+      return require('../../assets/images/home/yellowCar.png');
+    } else {
+      return require('../../assets/images/home/redCar.png');
+    }
+  };
+
   const handleNameEdit = () => {
     if (isEditing) {
       if (newName.trim().length < 2) {
@@ -79,34 +89,34 @@ export default function ProfileScreen() {
 
   const menuItems = [
     { 
-      icon: 'car', 
+      icon: require('../../assets/images/lk/home.png'),
       title: 'Управление объявлениями', 
       onPress: () => router.push('/my-listings') 
     },
     { 
-      icon: 'stats-chart', 
+      icon: require('../../assets/images/lk/line-chart-up.png'),
       title: 'Статистика', 
       onPress: () => {
         Alert.alert('В разработке', 'Функция находится в разработке');
       }
     },
     { 
-      icon: 'time', 
+      icon: require('../../assets/images/lk/history.png'),
       title: 'История', 
       onPress: () => router.push('/history') 
     },
     { 
-      icon: 'help-circle', 
+      icon: require('../../assets/images/lk/helperChat.png'),
       title: 'Служба поддержки', 
       onPress: () => router.push('/support') 
     },
     { 
-      icon: 'information-circle', 
+      icon: require('../../assets/images/lk/info.png'),
       title: 'О приложении', 
       onPress: () => router.push('/about') 
     },
     { 
-      icon: 'log-out', 
+      icon: require('../../assets/images/lk/logout.png'),
       title: 'Выйти', 
       onPress: handleLogout, 
       color: '#FF6969' 
@@ -127,11 +137,13 @@ export default function ProfileScreen() {
           <Text style={styles.userType}>
             {user.type === 'individual' ? 'Физическое лицо' : 'Компания'}
           </Text>
-          <Text style={styles.userCity}>{user.city}</Text>
+          <Text style={styles.userCity}>г. {user.city}</Text>
           <View style={styles.ratingContainer}>
-            <Ionicons name="star" size={16} color="#FFD700" />
+            <Image source={getRatingImage(user.rating)} style={styles.ratingImage} />
             <Text style={styles.rating}>{user.rating}</Text>
-            <Text style={styles.reviewsCount}>({user.reviewsCount} отзывов)</Text>
+          </View>
+          <View style={styles.ratingContainer}>
+            <Text style={styles.reviewsCount}>{user.reviewsCount} отзывов</Text>
           </View>
         </View>
       </View>
@@ -148,17 +160,19 @@ export default function ProfileScreen() {
           <Text style={styles.userName}>{user.name}</Text>
         )}
         <TouchableOpacity onPress={handleNameEdit} style={styles.editButton}>
-          <Ionicons 
+          {/* <Ionicons 
             name={isEditing ? "checkmark" : "pencil"} 
             size={24} 
             color="#007AFF" 
-          />
+          /> */}
+          <Image 
+              source={require('../../assets/images/lk/edit.png')} 
+            />
         </TouchableOpacity>
       </View>
 
       <View style={styles.balanceBlock}>
         <View>
-          <Text style={styles.balanceLabel}>Баланс</Text>
           <Text style={styles.balanceAmount}>{user.balance.toLocaleString()} ₽</Text>
         </View>
         <TouchableOpacity 
@@ -176,15 +190,13 @@ export default function ProfileScreen() {
             style={styles.menuItem}
             onPress={item.onPress}
           >
-            <Ionicons 
-              name={item.icon} 
-              size={24} 
-              color={item.color || '#000'} 
+            <Image 
+              source={item.icon} 
+              style={styles.menuIcon}
             />
             <Text style={[styles.menuItemText, item.color && { color: item.color }]}>
               {item.title}
             </Text>
-            <Ionicons name="chevron-forward" size={24} color="#C7C7CC" />
           </TouchableOpacity>
         ))}
       </View>
@@ -199,14 +211,16 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   userInfoBlock: {
+    display: 'flex',
     flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 24,
+    marginTop: 24,
   },
   avatarContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 100,
+    height: 100,
+    borderRadius: 20,
     marginRight: 16,
     backgroundColor: '#F2F2F7',
     justifyContent: 'center',
@@ -214,16 +228,19 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   userDetails: {
-    flex: 1,
   },
   userType: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 14,
+    fontWeight: '400',
     marginBottom: 4,
+  },
+  ratingImage: {
+    width: 20,
+    height: 20,
+    marginRight: 4,
   },
   userCity: {
     fontSize: 14,
-    color: '#666',
     marginBottom: 4,
   },
   ratingContainer: {
@@ -237,23 +254,22 @@ const styles = StyleSheet.create({
   },
   reviewsCount: {
     fontSize: 14,
-    color: '#666',
-    marginLeft: 4,
+    color: '#9980FF',
   },
   nameBlock: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 24,
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E5EA',
+    marginTop: 24,
+    position: 'relative',
   },
   userName: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 36,
+    fontWeight: '700',
+    textAlign: 'center',
     flex: 1,
   },
   nameInput: {
+    textAlign: 'center',
     fontSize: 24,
     fontWeight: 'bold',
     flex: 1,
@@ -261,15 +277,19 @@ const styles = StyleSheet.create({
   },
   editButton: {
     padding: 8,
+    position: 'absolute',
+    right: -8,
   },
   balanceBlock: {
+    borderWidth: 1,
+    borderColor: '#E2E2E2A3',
+    borderRadius: 15,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 24,
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E5EA',
+    marginTop: 44,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
   },
   balanceLabel: {
     fontSize: 14,
@@ -277,14 +297,16 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   balanceAmount: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 30,
+    fontWeight: '700',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
   },
   replenishButton: {
-    backgroundColor: '#007AFF',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
+    backgroundColor: '#9980FF',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 10,
   },
   replenishButtonText: {
     color: '#fff',
@@ -293,21 +315,27 @@ const styles = StyleSheet.create({
   },
   menuBlock: {
     flex: 1,
+    marginTop: 6,
   },
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E5EA',
+    gap: 16,
   },
   menuItemText: {
     flex: 1,
     fontSize: 16,
-    marginLeft: 12,
+    fontWeight: '400',
+    lineHeight: 18,
   },
   avatar: {
     width: '100%',
     height: '100%',
+  },
+  menuIcon: {
+    width: 20,
+    height: 20,
+    marginRight: 12,
   },
 }); 

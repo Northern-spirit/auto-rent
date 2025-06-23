@@ -91,12 +91,12 @@ export default function CarDetailScreen() {
         
         <View style={styles.ratingBlock}>
           <View style={styles.ratingContainer}>
+            <Text style={styles.ratingText}>{car.rating.toFixed(1)}</Text>
             <Image 
               source={getRatingImage(car.rating)} 
               style={styles.ratingImage}
               resizeMode="contain"
             />
-            <Text style={styles.ratingText}>{car.rating.toFixed(1)}</Text>
           </View>
           <Text style={styles.reviewsCount}>{car.reviewsCount} отзывов</Text>
         </View>
@@ -209,6 +209,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginRight: 12,
+    gap: 4,
   },
   ratingImage: {
     width: 24,
@@ -216,13 +217,13 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   ratingText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
+    fontSize: 20,
+    fontWeight: '400',
+    color: '#666',
   },
   reviewsCount: {
     fontSize: 16,
-    color: '#666',
+    color: 'black',
   },
   detailsBlock: {
     marginBottom: 30,
@@ -235,7 +236,8 @@ const styles = StyleSheet.create({
   },
   detailRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
+    gap: 8,
     marginBottom: 12,
   },
   detailLabel: {

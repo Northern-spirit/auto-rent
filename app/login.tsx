@@ -47,7 +47,7 @@ export default function Login() {
       <View style={styles.content}>
         <Text style={styles.title}>Вход</Text>
         
-        <View style={styles.roleSwitch}>
+        {/* <View style={styles.roleSwitch}>
           <Text style={styles.roleText}>Я покупатель</Text>
           <Switch
             trackColor={{ false: '#767577', true: '#81b0ff' }}
@@ -57,7 +57,7 @@ export default function Login() {
             value={isSeller}
           />
           <Text style={styles.roleText}>Я продавец</Text>
-        </View>
+        </View> */}
 
         <View style={styles.form}>
           <Input
