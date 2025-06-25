@@ -2,39 +2,42 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Button } from '../../components/Button';
+import { TabBarWrapper } from '../../components/TabBarWrapper';
 
 export default function DescriptionScreen() {
   const router = useRouter();
   const [description, setDescription] = useState('');
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Описание</Text>
+    <TabBarWrapper>
+      <View style={styles.container}>
+        <Text style={styles.title}>Описание</Text>
 
-      <TextInput
-        style={styles.textArea}
-        multiline
-        numberOfLines={8}
-        placeholder="Опишите ваш автомобиль..."
-        value={description}
-        onChangeText={setDescription}
-        textAlignVertical="top"
-      />
+        <TextInput
+          style={styles.textArea}
+          multiline
+          numberOfLines={8}
+          placeholder="Опишите ваш автомобиль..."
+          value={description}
+          onChangeText={setDescription}
+          textAlignVertical="top"
+        />
 
-      <View style={styles.buttonContainer}>
-        <Button
-          title="Назад"
-          onPress={() => router.back()}
-          variant="secondary"
-          style={styles.button}
-        />
-        <Button
-          title="Далее"
-          onPress={() => router.push('/add-listing/price')}
-          style={styles.button}
-        />
+        <View style={styles.buttonContainer}>
+          <Button
+            title="Назад"
+            onPress={() => router.back()}
+            variant="secondary"
+            style={styles.button}
+          />
+          <Button
+            title="Далее"
+            onPress={() => router.push('/add-listing/price')}
+            style={styles.button}
+          />
+        </View>
       </View>
-    </View>
+    </TabBarWrapper>
   );
 }
 

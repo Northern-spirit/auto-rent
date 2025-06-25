@@ -5,6 +5,7 @@ import { Button } from '../../components/Button';
 import { Input } from '../../components/Input';
 import { Ionicons } from '@expo/vector-icons';
 import { useStore } from '../../store/useStore';
+import { TabBarWrapper } from '../../components/TabBarWrapper';
 
 // Моковые данные для марок автомобилей
 const CAR_BRANDS = [
@@ -100,129 +101,136 @@ export default function CharacteristicsScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#000" />
-        </TouchableOpacity>
-        <Text style={styles.title}>Характеристики</Text>
-      </View>
-
-      <View style={styles.content}>
-        {/* Марка автомобиля */}
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Марка автомобиля</Text>
-          <TouchableOpacity 
-            style={styles.brandInput}
-            onPress={() => setShowBrandModal(true)}
-          >
-            <Text style={[styles.brandText, !brand && styles.placeholder]}>
-              {brand || 'Выберите марку'}
-            </Text>
-            <Ionicons name="chevron-down" size={20} color="#666" />
+    <TabBarWrapper>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <Ionicons name="arrow-back" size={24} color="#000" />
           </TouchableOpacity>
+          <Text style={styles.title}>Технические характеристики</Text>
         </View>
 
-        {/* Модель */}
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Модель</Text>
-          <Input
-            value={model}
-            onChangeText={setModel}
-            placeholder="Введите модель"
-          />
-        </View>
+        <View style={styles.content}>
+          {/* Марка автомобиля */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Марка автомобиля</Text>
+            <TouchableOpacity 
+              style={styles.brandInput}
+              onPress={() => setShowBrandModal(true)}
+            >
+              <Text style={[styles.brandText, !brand && styles.placeholder]}>
+                {brand || 'Выберите марку'}
+              </Text>
+              <Ionicons name="chevron-down" size={20} color="#666" />
+            </TouchableOpacity>
+          </View>
 
-        {/* Год выпуска */}
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Год выпуска</Text>
-          <Input
-            value={year}
-            onChangeText={setYear}
-            placeholder="Например: 2020"
-            keyboardType="numeric"
-          />
-        </View>
-
-        {/* Пробег */}
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Пробег (км)</Text>
-          <Input
-            value={mileage}
-            onChangeText={setMileage}
-            placeholder="Например: 50000"
-            keyboardType="numeric"
-          />
-        </View>
-
-        {/* Цена */}
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Цена за день (₽)</Text>
-          <Input
-            value={price}
-            onChangeText={setPrice}
-            placeholder="Например: 3000"
-            keyboardType="numeric"
-          />
-        </View>
-
-        {/* Описание */}
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Описание</Text>
-          <Input
-            value={description}
-            onChangeText={setDescription}
-            placeholder="Опишите ваш автомобиль"
-            multiline
-            numberOfLines={4}
-          />
-        </View>
-
-        <Button 
-          title="Добавить объявление"
-          onPress={handleSubmit}
-          style={styles.submitButton}
-        />
-      </View>
-
-      {/* Модальное окно выбора марки */}
-      <Modal
-        visible={showBrandModal}
-        animationType="slide"
-        transparent={true}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Выберите марку</Text>
-              <TouchableOpacity onPress={() => setShowBrandModal(false)}>
-                <Ionicons name="close" size={24} color="#000" />
-              </TouchableOpacity>
-            </View>
-            
+          {/* Модель */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Модель</Text>
             <Input
-              value={brand}
-              onChangeText={handleBrandSearch}
-              placeholder="Поиск марки"
-              style={styles.searchInput}
-            />
-            
-            <FlatList
-              data={filteredBrands}
-              renderItem={({ item }) => (
-                <TouchableOpacity 
-                  style={styles.brandItem}
-                  onPress={() => selectBrand(item)}
-                >
-                  <Text style={styles.brandItemText}>{item}</Text>
-                </TouchableOpacity>
-              )}
-              keyExtractor={item => item}
+              value={model}
+              style={styles.input}
+              onChangeText={setModel}
+              placeholder="Введите модель"
             />
           </View>
+
+          {/* Год выпуска */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Год выпуска</Text>
+            <Input
+              value={year}
+              style={styles.input}
+              onChangeText={setYear}
+              placeholder="Например: 2020"
+              keyboardType="numeric"
+            />
+          </View>
+
+          {/* Пробег */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Пробег (км)</Text>
+            <Input
+              value={mileage}
+              style={styles.input}
+              onChangeText={setMileage}
+              placeholder="Например: 50000"
+              keyboardType="numeric"
+            />
+          </View>
+
+          {/* Цена */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Цена за день (₽)</Text>
+            <Input
+              value={price}
+              style={styles.input}
+              onChangeText={setPrice}
+              placeholder="Например: 3000"
+              keyboardType="numeric"
+            />
+          </View>
+
+          {/* Описание */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Описание</Text>
+            <Input
+              value={description}
+              style={styles.input}
+              onChangeText={setDescription}
+              placeholder="Опишите ваш автомобиль"
+              multiline
+              numberOfLines={4}
+            />
+          </View>
+
+          <Button 
+            title="Добавить объявление"
+            onPress={handleSubmit}
+            style={styles.submitButton}
+          />
         </View>
-      </Modal>
-    </View>
+
+        {/* Модальное окно выбора марки */}
+        <Modal
+          visible={showBrandModal}
+          animationType="slide"
+          transparent={true}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Выберите марку</Text>
+                <TouchableOpacity onPress={() => setShowBrandModal(false)}>
+                  <Ionicons name="close" size={24} color="#000" />
+                </TouchableOpacity>
+              </View>
+              
+              <Input
+                value={brand}
+                onChangeText={handleBrandSearch}
+                placeholder="Поиск марки"
+                style={styles.searchInput}
+              />
+              
+              <FlatList
+                data={filteredBrands}
+                renderItem={({ item }) => (
+                  <TouchableOpacity 
+                    style={styles.brandItem}
+                    onPress={() => selectBrand(item)}
+                  >
+                    <Text style={styles.brandItemText}>{item}</Text>
+                  </TouchableOpacity>
+                )}
+                keyExtractor={item => item}
+              />
+            </View>
+          </View>
+        </Modal>
+      </View>
+    </TabBarWrapper>
   );
 }
 
@@ -235,21 +243,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E5E5',
   },
   backButton: {
     marginRight: 16,
   },
   title: {
-    fontSize: 20,
-    fontWeight: '600',
+    fontSize: 36,
+    fontWeight: '700',
+  },
+  input: {
+    width: '100%',
+    height: 45,
+    borderRadius: 20,
   },
   content: {
     padding: 20,
   },
   inputGroup: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
   label: {
     fontSize: 16,

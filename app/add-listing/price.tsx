@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Button } from '../../components/Button';
 import { Input } from '../../components/Input';
+import { TabBarWrapper } from '../../components/TabBarWrapper';
 
 export default function PriceScreen() {
   const router = useRouter();
@@ -31,42 +32,44 @@ export default function PriceScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Стоимость и время аренды</Text>
+    <TabBarWrapper>
+      <View style={styles.container}>
+        <Text style={styles.title}>Стоимость и время аренды</Text>
 
-      <Input
-        value={price}
-        onChangeText={setPrice}
-        placeholder="Рублей в сутки"
-        keyboardType="numeric"
-        style={styles.input}
-      />
-
-      <Text style={styles.subtitle}>Минимальная и максимальная границы аренды:</Text>
-
-      <View style={styles.daysContainer}>
         <Input
-          value={minDays}
-          onChangeText={setMinDays}
-          placeholder="От 1 дня"
+          value={price}
+          onChangeText={setPrice}
+          placeholder="Рублей в сутки"
           keyboardType="numeric"
-          style={[styles.input, styles.daysInput]}
+          style={styles.input}
         />
-        <Input
-          value={maxDays}
-          onChangeText={setMaxDays}
-          placeholder="До 5 дней"
-          keyboardType="numeric"
-          style={[styles.input, styles.daysInput]}
+
+        <Text style={styles.subtitle}>Минимальная и максимальная границы аренды:</Text>
+
+        <View style={styles.daysContainer}>
+          <Input
+            value={minDays}
+            onChangeText={setMinDays}
+            placeholder="От 1 дня"
+            keyboardType="numeric"
+            style={[styles.input, styles.daysInput]}
+          />
+          <Input
+            value={maxDays}
+            onChangeText={setMaxDays}
+            placeholder="До 5 дней"
+            keyboardType="numeric"
+            style={[styles.input, styles.daysInput]}
+          />
+        </View>
+
+        <Button
+          title="Опубликовать"
+          onPress={handlePublish}
+          style={styles.publishButton}
         />
       </View>
-
-      <Button
-        title="Опубликовать"
-        onPress={handlePublish}
-        style={styles.publishButton}
-      />
-    </View>
+    </TabBarWrapper>
   );
 }
 

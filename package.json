@@ -10,7 +10,7 @@
     "test": "mocha"
   },
   "jest": {
-    "preset": "jest-expo"
+    "preset": "jest-expo" 
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
