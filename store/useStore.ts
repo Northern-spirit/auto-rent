@@ -60,6 +60,18 @@ interface ChatMessage {
   messageId: string;
 }
 
+interface Review {
+  id: string;
+  carId: string;
+  userPhoto: string;
+  userName: string;
+  userType: string;
+  rating: number;
+  carRating: number;
+  comment: string;
+  timestamp: string;
+}
+
 interface Store {
   cars: Car[];
   favorites: Car[];
@@ -94,6 +106,10 @@ interface Store {
   setFilters: (filters: Partial<Store['filters']>) => void;
   resetFilters: () => void;
   addCar: (carData: Partial<Car>) => void;
+  reviews: Review[];
+  getReviewsByCarId: (carId: string) => Review[];
+  getAverageRatingByCarId: (carId: string) => string;
+  updateCarRating: (carId: string) => void;
 }
 
 export const useStore = create<Store>((set, get) => ({
@@ -647,6 +663,159 @@ export const useStore = create<Store>((set, get) => ({
 
     set((state) => ({
       cars: [newCar, ...state.cars] // Добавляем новое объявление в начало списка
+    }));
+  },
+  reviews: [
+    {
+      id: '1',
+      carId: '1',
+      userPhoto: 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSXhSzkvMUoGwMYqTFzxIDrFeYzKWt-a8-zwuQbOLNqD09pm8lSZzuwgArk4U4OTPlaXpPXcLno82nowcd0ZRJYuw',
+      userName: 'Александр Петров',
+      userType: 'Юр лицо',
+      rating: 5,
+      carRating: 5,
+      comment: 'Тачка просто улет! Обязательно возьму еще раз покататься! Очень доволен качеством автомобиля и сервисом.',
+      timestamp: '16:45 20.11.2024'
+    },
+    {
+      id: '2',
+      carId: '1',
+      userPhoto: 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSXhSzkvMUoGwMYqTFzxIDrFeYzKWt-a8-zwuQbOLNqD09pm8lSZzuwgArk4U4OTPlaXpPXcLno82nowcd0ZRJYuw',
+      userName: 'Мария Сидорова',
+      userType: 'Физ лицо',
+      rating: 4,
+      carRating: 4,
+      comment: 'Хороший автомобиль, но есть небольшие недочеты. В целом довольна арендой.',
+      timestamp: '14:30 19.11.2024'
+    },
+    {
+      id: '3',
+      carId: '1',
+      userPhoto: 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSXhSzkvMUoGwMYqTFzxIDrFeYzKWt-a8-zwuQbOLNqD09pm8lSZzuwgArk4U4OTPlaXpPXcLno82nowcd0ZRJYuw',
+      userName: 'Дмитрий Козлов',
+      userType: 'Физ лицо',
+      rating: 2,
+      carRating: 3,
+      comment: 'Не очень доволен. Машина была грязная, кондиционер не работал. Не рекомендую.',
+      timestamp: '12:15 18.11.2024'
+    },
+    {
+      id: '4',
+      carId: '1',
+      userPhoto: 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSXhSzkvMUoGwMYqTFzxIDrFeYzKWt-a8-zwuQbOLNqD09pm8lSZzuwgArk4U4OTPlaXpPXcLno82nowcd0ZRJYuw',
+      userName: 'Елена Волкова',
+      userType: 'Юр лицо',
+      rating: 5,
+      carRating: 5,
+      comment: 'Отличный автомобиль! Все работает идеально, владелец очень вежливый. Обязательно обращусь еще раз.',
+      timestamp: '10:20 17.11.2024'
+    },
+    {
+      id: '5',
+      carId: '1',
+      userPhoto: 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSXhSzkvMUoGwMYqTFzxIDrFeYzKWt-a8-zwuQbOLNqD09pm8lSZzuwgArk4U4OTPlaXpPXcLno82nowcd0ZRJYuw',
+      userName: 'Иван Смирнов',
+      userType: 'Физ лицо',
+      rating: 4,
+      carRating: 4,
+      comment: 'Неплохой автомобиль для городских поездок.',
+      timestamp: '09:15 16.11.2024'
+    },
+    {
+      id: '6',
+      carId: '1',
+      userPhoto: 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSXhSzkvMUoGwMYqTFzxIDrFeYzKWt-a8-zwuQbOLNqD09pm8lSZzuwgArk4U4OTPlaXpPXcLno82nowcd0ZRJYuw',
+      userName: 'Анна Козлова',
+      userType: 'Юр лицо',
+      rating: 5,
+      carRating: 5,
+      comment: 'Отличная машина! Все работает как часы.',
+      timestamp: '08:30 15.11.2024'
+    },
+    {
+      id: '7',
+      carId: '1',
+      userPhoto: 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSXhSzkvMUoGwMYqTFzxIDrFeYzKWt-a8-zwuQbOLNqD09pm8lSZzuwgArk4U4OTPlaXpPXcLno82nowcd0ZRJYuw',
+      userName: 'Петр Иванов',
+      userType: 'Физ лицо',
+      rating: 3,
+      carRating: 4,
+      comment: 'Нормальная машина, но могло быть и лучше.',
+      timestamp: '07:45 14.11.2024'
+    },
+    {
+      id: '8',
+      carId: '1',
+      userPhoto: 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSXhSzkvMUoGwMYqTFzxIDrFeYzKWt-a8-zwuQbOLNqD09pm8lSZzuwgArk4U4OTPlaXpPXcLno82nowcd0ZRJYuw',
+      userName: 'Светлана Петрова',
+      userType: 'Физ лицо',
+      rating: 5,
+      carRating: 5,
+      comment: 'Превосходный автомобиль! Очень довольна.',
+      timestamp: '06:20 13.11.2024'
+    },
+    {
+      id: '9',
+      carId: '1',
+      userPhoto: 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSXhSzkvMUoGwMYqTFzxIDrFeYzKWt-a8-zwuQbOLNqD09pm8lSZzuwgArk4U4OTPlaXpPXcLno82nowcd0ZRJYuw',
+      userName: 'Михаил Сидоров',
+      userType: 'Юр лицо',
+      rating: 4,
+      carRating: 4,
+      comment: 'Хороший автомобиль для бизнес-поездок.',
+      timestamp: '05:10 12.11.2024'
+    },
+    {
+      id: '10',
+      carId: '1',
+      userPhoto: 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSXhSzkvMUoGwMYqTFzxIDrFeYzKWt-a8-zwuQbOLNqD09pm8lSZzuwgArk4U4OTPlaXpPXcLno82nowcd0ZRJYuw',
+      userName: 'Ольга Козлова',
+      userType: 'Физ лицо',
+      rating: 5,
+      carRating: 5,
+      comment: 'Лучший автомобиль из всех, что я арендовала!',
+      timestamp: '04:30 11.11.2024'
+    },
+    {
+      id: '11',
+      carId: '1',
+      userPhoto: 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSXhSzkvMUoGwMYqTFzxIDrFeYzKWt-a8-zwuQbOLNqD09pm8lSZzuwgArk4U4OTPlaXpPXcLno82nowcd0ZRJYuw',
+      userName: 'Денис Волков',
+      userType: 'Физ лицо',
+      rating: 4,
+      carRating: 4,
+      comment: 'Солидный автомобиль, рекомендую.',
+      timestamp: '03:15 10.11.2024'
+    },
+    {
+      id: '12',
+      carId: '1',
+      userPhoto: 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSXhSzkvMUoGwMYqTFzxIDrFeYzKWt-a8-zwuQbOLNqD09pm8lSZzuwgArk4U4OTPlaXpPXcLno82nowcd0ZRJYuw',
+      userName: 'Татьяна Смирнова',
+      userType: 'Юр лицо',
+      rating: 5,
+      carRating: 5,
+      comment: 'Идеальный автомобиль для наших нужд!',
+      timestamp: '02:45 09.11.2024'
+    }
+  ],
+  getReviewsByCarId: (carId: string) => {
+    return get().reviews.filter(review => review.carId === carId);
+  },
+  getAverageRatingByCarId: (carId: string) => {
+    const carReviews = get().reviews.filter(review => review.carId === carId);
+    if (carReviews.length === 0) return '0.0';
+    const totalRating = carReviews.reduce((sum, review) => sum + review.carRating, 0);
+    return (totalRating / carReviews.length).toFixed(1);
+  },
+  updateCarRating: (carId: string) => {
+    const averageRating = get().getAverageRatingByCarId(carId);
+    set((state) => ({
+      cars: state.cars.map(car => 
+        car.id === carId 
+          ? { ...car, rating: parseFloat(averageRating) }
+          : car
+      )
     }));
   },
 })); 

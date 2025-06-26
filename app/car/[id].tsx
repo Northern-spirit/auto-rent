@@ -98,7 +98,9 @@ export default function CarDetailScreen() {
               resizeMode="contain"
             />
           </View>
-          <Text style={styles.reviewsCount}>{car.reviewsCount} отзывов</Text>
+          <TouchableOpacity onPress={() => router.push(`/car/${car.id}/reviews`)}>
+            <Text style={styles.reviewsCount}>{car.reviewsCount} отзывов</Text>
+          </TouchableOpacity>
         </View>
         
         {/* Блок 9: Дополнительные характеристики */}
@@ -223,7 +225,8 @@ const styles = StyleSheet.create({
   },
   reviewsCount: {
     fontSize: 16,
-    color: 'black',
+    color: '#666',
+    textDecorationLine: 'underline',
   },
   detailsBlock: {
     marginBottom: 30,
