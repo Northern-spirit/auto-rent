@@ -1,23 +1,17 @@
-import React from 'react';
-import { View, FlatList, StyleSheet, Image, Text, TouchableOpacity } from 'react-native';
+import React, { useState, useMemo } from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useStore } from '../../store/useStore';
+import { FavoritesFilterModal } from '../../components/FavoritesFilterModal';
+
+type FilterType = 'distance' | 'rating' | 'priceDesc' | 'priceAsc';
 
 export default function FavoritesScreen() {
   const router = useRouter();
   const { favorites, removeFromFavorites } = useStore();
-
-  if (!favorites || favorites.length === 0) {
-    return (
-      <View style={styles.container}>
-        <View style={styles.emptyContainer}>
-          <Ionicons name="heart-outline" size={64} color="#8E8E93" />
-          <Text style={styles.emptyText}>В избранном пока ничего нет</Text>
-        </View>
-      </View>
-    );
-  }
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [filterType, setFilterType] = useState<FilterType>('distance');
 
   const getRatingImage = (rating: number) => {
     if (rating >= 4 && rating <= 5) {
@@ -26,6 +20,42 @@ export default function FavoritesScreen() {
       return require('../../assets/images/home/yellowCar.png');
     } else {
       return require('../../assets/images/home/redCar.png');
+    }
+  };
+
+  const filteredAndSortedFavorites = useMemo(() => {
+    let result = [...favorites];
+
+    switch (filterType) {
+      case 'distance':
+        result.sort((a, b) => a.distanceValue - b.distanceValue);
+        break;
+      case 'rating':
+        result.sort((a, b) => b.rating - a.rating);
+        break;
+      case 'priceDesc':
+        result.sort((a, b) => b.price - a.price);
+        break;
+      case 'priceAsc':
+        result.sort((a, b) => a.price - b.price);
+        break;
+    }
+
+    return result;
+  }, [favorites, filterType]);
+
+  const getFilterButtonText = () => {
+    switch (filterType) {
+      case 'distance':
+        return 'По удаленности';
+      case 'rating':
+        return 'По рейтингу';
+      case 'priceDesc':
+        return 'Сначала дороже';
+      case 'priceAsc':
+        return 'Сначала дешевле';
+      default:
+        return 'Фильтры';
     }
   };
 
@@ -39,17 +69,11 @@ export default function FavoritesScreen() {
           source={{ uri: item.image }}
           style={styles.image}
         />
-
       </View>
       <View style={styles.infoContainer}>
         <Text numberOfLines={1} ellipsizeMode="tail" style={styles.title}>{item.title}</Text>
         <Text style={styles.price}>{item.priceDisplay}</Text>
 
-        {/* <View style={styles.characteristics}>
-          <Text style={styles.characteristicText}>
-            {item.age} лет • {item.acceleration}с до 100км/ч • {item.horsepower} л.с.
-          </Text>
-        </View> */}
 
         <View style={styles.footer}>
           <View style={styles.rating}>
@@ -64,7 +88,7 @@ export default function FavoritesScreen() {
         </View>
         <View style={styles.buttonContainerWrapper}>
           <TouchableOpacity style={styles.buttonContainer} onPress={() => router.push(`/car/${item.id}`)}>
-            <Text style={styles.buttonText}>Забронироватьы</Text>
+            <Text style={styles.buttonText}>Забронировать</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.heartButton}
@@ -77,19 +101,35 @@ export default function FavoritesScreen() {
           </TouchableOpacity>
         </View>
       </View>
-
     </TouchableOpacity>
   );
+
+  const handleApplyFilter = (newFilterType: FilterType) => {
+    setFilterType(newFilterType);
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.titlePage}>Избранное</Text>
-      <View>Фильтры</View>
+      <TouchableOpacity 
+        style={styles.filterButton}
+        onPress={() => setShowFilterModal(true)}
+      >
+        <Image source={require('../../assets/images/home/arrowSort.png')} style={styles.filterImage} />
+        <Text style={styles.filterText}>{getFilterButtonText()}</Text>
+      </TouchableOpacity>
       <FlatList
-        data={favorites}
+        data={filteredAndSortedFavorites}
         renderItem={renderItem}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.list}
+      />
+
+      <FavoritesFilterModal
+        visible={showFilterModal}
+        onClose={() => setShowFilterModal(false)}
+        onApply={handleApplyFilter}
+        currentFilterType={filterType}
       />
     </View>
   );
@@ -214,4 +254,25 @@ const styles = StyleSheet.create({
     marginLeft: 4,
     color: '#999',
   },
+  filterText: {
+    fontSize: 10,
+    fontWeight: '500',
+    color: 'black',
+    position: 'relative',
+    top: 1,
+  },
+  filterButton: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    marginHorizontal: 16,
+    marginTop: 16,
+  },
+  filterImage: {
+    alignItems: 'center',
+    width: 9,
+    height: 9,
+  },
+  
 }); 
